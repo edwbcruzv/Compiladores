@@ -1,32 +1,25 @@
-
+from Estado import *
 
 class Transicion():
     
-    def __init__(self,lista=None,EstadoPrincipal=None,EstadoDestino=None,Simbolos=None):
+    def __init__(self,EdoPrincipal,NomEdoDestino,Simbolo):
         
-        if lista==None:
-            #Estado(Objeto) Principal
-            self.EstadoPrincipal=EstadoPrincipal
-            #Estado(Objeto) Destino
-            self.EstadoDestino=EstadoDestino
-            #Lista de Simbolos de transicion
-            self.Simbolos=Simbolos
-        else:   #creacion deo objeto usando solo el primer argumento
-            #Estado(Objeto) Principal
-            self.EstadoPrincipal=lista[0]
-            #Estado(Objeto) Destino
-            self.EstadoDestino=lista[1]
-            #Lista de Simbolos de transicion
-            self.Simbolos=lista[2]
+        #Estado(Objeto) Principal
+        self.EstadoPrincipal=EdoPrincipal
+        #Estado(Objeto) Destino
+        self.EstadoDestino=NomEdoDestino
+        #Simbolo de transicion
+        self.Simbolo=Simbolo
+        
 
-    def setEstadoPrincipal(self,EstadoPrincipal):
-        self.EstadoPrincipal=EstadoPrincipal
+    def setEstadoPrincipal(self,estado):
+        self.EstadoPrincipal=estado
 
-    def setEstadoDestino(self,EstadoDestino):
-        self.EstadoDestino=EstadoDestino
+    def setEstadoDestino(self,estado):
+        self.EstadoDestino=estado
 
-    def setSimbolos(self,Simbolos):
-        self.Simbolos=Simbolos
+    def setSimbolo(self,simbolo):
+        self.Simbolo=simbolo
 
     def getEstadoPrincipal(self):
         return self.EstadoPrincipal
@@ -34,10 +27,16 @@ class Transicion():
     def getEstadoDestino(self):
         return self.EstadoDestino
 
-    def getSimbolos(self):
-        return self.Simbolos
+    def getSimbolo(self):
+        return self.Simbolo
+    
+    def __lt__(self,transicion):
+        return self.EstadoPrincipal<transicion.getEstadoPrincipal()
+
+    def __le__(self,transicion):
+        return self.EstadoPrincipal<=transicion.getEstadoPrincipal()
 
     def __str__(self):
 
         return "%s -> %s [label=%s] " %(
-            self.EstadoPrincipal,self.EstadoDestino,self.Simbolos)
+            self.EstadoPrincipal.getNombre(),self.EstadoDestino.getNombre(),self.Simbolo.__str__())
