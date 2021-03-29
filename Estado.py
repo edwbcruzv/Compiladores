@@ -36,7 +36,7 @@ class Estado():
     def __str__(self):
         #en el caso de ser un estado de aceptacion tambien se mostrara su token
         if self.Token:
-            return "%s [shape=doublecircle] [token=%d]" %(
-                self.Nombre,self.Token)
+            return "%s [shape=doublecircle]" %(
+                self.Nombre)
         else: #como no es estado de aceptacion solo se mostrara su nombre
             return self.Nombre

@@ -174,15 +174,24 @@ class AFN_e:
         
     def mostrarAutomata(self):
         
-        print("Conjunto de Estados(Objeto) no vacios")
-        for e in self.K:
-           print(e.__str__())
+        f = open("afn.dot", "w+")
+        f.write("digraph{\nfake [style=invisible]\nfake -> s0 [style=bold]\n\n")
+
 
         print("Alfabeto que acepta el automata")
         print(self.Sigma)
 
         print("Estado de inicio del automata")
         print(self.S.__str__())
+        f.write("s" + self.S.__str__() + " [root = true]\n")
+        f.write("\n")
+
+        print("Conjunto de Estados(Objeto) no vacios")
+        for e in self.K[1:]:
+           print(e.__str__())
+           f.write('s'+str(e.__str__())+'\n')
+
+        f.write("\n")
 
         print("Conjunto de Estados(Objeto) de aceptacion")
         for e in self.Z:
@@ -191,3 +200,10 @@ class AFN_e:
         print("Conjunto de Transiciones(Objeto)")
         for e in self.M:
             print(e.__str__())
+            f.write(e.__str__()+"\n")
+
+        f.write("\n}")
+        f.close()
+
+        afn = automata_IO.nfa_dot_importer("afn.dot")
+        automata_IO.nfa_to_dot(afn, "conv", ".")
