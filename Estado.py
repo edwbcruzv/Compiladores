@@ -6,9 +6,10 @@ class Estado():
         if list==type(elem):
             self.Nombre=elem[0]
             self.Token=elem[1]
-        else:
+        elif str==type(elem):
             self.Nombre=elem
             self.Token=Token
+        
             
 
     def setNombre(self,Nombre):
@@ -25,13 +26,13 @@ class Estado():
         return self.Token
 
     def __lt__(self,estado):
-        return self.Nombre<estado.getNombre()
+        return self.getNombre()<estado.getNombre()
 
     def __le__(self,estado):
-        return self.Nombre<=estado.getNombre()
+        return self.getNombre()<=estado.getNombre()
 
     def __eq__(self,estado):
-        return self.Nombre==estado.getNombre()
+        return self.getNombre()==estado.getNombre()
 
     def __str__(self):
         #en el caso de ser un estado de aceptacion tambien se mostrara su token
