@@ -287,7 +287,7 @@ class AFN_e:
     def setEstadosAceptacion(self,Z):
         self.Z=Z
 
-    def setTransicion(self,M):
+    def setTransiciones(self,M):
         self.M=M
 
     def getEdoInicial(self):
