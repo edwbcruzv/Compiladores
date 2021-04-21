@@ -78,6 +78,11 @@ class Transicion:
     def __le__(self,transicion):
         return self.EstadoPrincipal<=transicion.getEstadoPrincipal()
 
+    def __eq__(self,transicion):
+        return (self.EstadoPrincipal<=transicion.getEstadoPrincipal() 
+                and self.EstadoDestino<=transicion.getEstadoDestino()
+                and self.Simbolo<=transicion.getSimbolo())
+
     def __str__(self):
 
         return "s%s -> s%s [label=\"%s\"] " %(
@@ -87,7 +92,11 @@ class Transicion:
 class AFN_e:
     
 
-    def __init__(self,K_list,Sigma_list,S,Z_list,M_list):
+    def __init__(self,str_Nombre,K_list=None,Sigma_list=None,S=None,Z_list=None,M_list=None):
+
+        #Nombre que recibe el automata para identificarlo
+        self.Nombre_Automata=str_Nombre
+
         #Conjunto de Estados(Objeto) no vacios
         self.K=[]  #K_list:Formato=[estado1,estado2,estado3,.....]
 
@@ -103,6 +112,11 @@ class AFN_e:
         #Conjunto de Transiciones(Objeto)
         self.M=[] #M_list:Formato= [[sublista1],[sublista2],[sublista3],....]
             #        sublista: Formato=[estado1,estado2,Simbolos]
+
+
+        if K_list==None and Sigma_list==None and S==None and Z_list==None and M_list==None:
+            return
+    
         #primero se empieza a definir y a crear los estados de aceptacion, ya que
         #para los demas atributos necesitaremos la lista de todos los estados
         self.__ListEstadosObjs(K_list)
@@ -182,6 +196,17 @@ class AFN_e:
 
         self.S=nuevo_edo_inicial #redefiniendo los nuevos estados iniciales creados
         self.Z=[nuevo_edo_final] #redefiniendo los nuevos estados finales creados
+    def agregarEdoFinal(self):
+
+        tam=len(self.getEstadosAceptacion())
+        if tam>1:
+            #se crea el nuevo estado final
+            nuevo_edo_final=self.nuevoEdo()
+            for e in self.getEstadosAceptacion():
+                self.__ListTransicionesObjs([[e.getNombre(),nuevo_edo_final.getNombre(),"E"]])
+
+            self.Z=[nuevo_edo_final] #redefiniendo los nuevos estados finales creados
+
 
     def concatCon(self,automata2):
 
@@ -304,7 +329,14 @@ class AFN_e:
     def getTransiciones(self):
         return self.M
 
+    def __lt__(self,automata):
+        return self.Nombre_Automata<automata.Nombre_Automata
 
+    def __le__(self,automata):
+        return self.Nombre_Automata<=automata.Nombre_Automata
+
+    def __eq__(self,automata):
+        return self.Nombre_Automata==automata.Nombre_Automata
 
 #-----------------------------------------------------------------
 #-------------METODOS AL INICIAR LA CONSTRUCCION DE UN AUTOMATA----------------------
@@ -369,6 +401,7 @@ class AFN_e:
             
         
     def mostrarAutomata(self):
+        print("Nombre de AFN :",self.Nombre_Automata)
 
         print("Alfabeto que acepta el automata")
         print(self.Sigma)
@@ -627,6 +660,7 @@ class convertAFD:
         #     k=k+1
 
         #se crea el automata con las propiedadesya creadas
-        self.afd=AFN_e(afd_K,afd_Sigma,afd_S,afd_Z,afd_M)
+        nuevo_nombre="AFD_"+self.afd.Nombre_Automata
+        self.afd=AFN_e(nuevo_nombre,afd_K,afd_Sigma,afd_S,afd_Z,afd_M)
 
         

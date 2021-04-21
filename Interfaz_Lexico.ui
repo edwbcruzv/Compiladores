@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>773</width>
-    <height>569</height>
+    <width>1160</width>
+    <height>565</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,14 +16,14 @@
   <widget class="QTabWidget" name="Pestanias">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>20</y>
-     <width>511</width>
-     <height>521</height>
+     <x>20</x>
+     <y>10</y>
+     <width>521</width>
+     <height>541</height>
     </rect>
    </property>
    <property name="currentIndex">
-    <number>3</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="Crear">
     <attribute name="title">
@@ -32,14 +32,14 @@
     <widget class="QPushButton" name="pushButton_Crear">
      <property name="geometry">
       <rect>
-       <x>150</x>
-       <y>450</y>
-       <width>171</width>
+       <x>100</x>
+       <y>430</y>
+       <width>311</width>
        <height>31</height>
       </rect>
      </property>
      <property name="text">
-      <string>PushButton</string>
+      <string>Crear AFN</string>
      </property>
     </widget>
     <widget class="QSpinBox" name="spinBox_num_Estados">
@@ -69,7 +69,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>170</y>
+       <y>190</y>
        <width>471</width>
        <height>71</height>
       </rect>
@@ -79,7 +79,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>100</y>
+       <y>120</y>
        <width>81</width>
        <height>16</height>
       </rect>
@@ -92,7 +92,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>130</y>
+       <y>150</y>
        <width>341</width>
        <height>21</height>
       </rect>
@@ -105,7 +105,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>250</y>
+       <y>270</y>
        <width>181</width>
        <height>21</height>
       </rect>
@@ -118,7 +118,7 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>280</y>
+       <y>300</y>
        <width>351</width>
        <height>16</height>
       </rect>
@@ -133,7 +133,7 @@
        <x>20</x>
        <y>320</y>
        <width>461</width>
-       <height>111</height>
+       <height>91</height>
       </rect>
      </property>
     </widget>
@@ -141,7 +141,7 @@
      <property name="geometry">
       <rect>
        <x>220</x>
-       <y>50</y>
+       <y>100</y>
        <width>261</width>
        <height>31</height>
       </rect>
@@ -150,8 +150,8 @@
     <widget class="QLabel" name="label_3">
      <property name="geometry">
       <rect>
-       <x>230</x>
-       <y>10</y>
+       <x>220</x>
+       <y>40</y>
        <width>131</width>
        <height>16</height>
       </rect>
@@ -163,14 +163,14 @@
     <widget class="QLabel" name="label_7">
      <property name="geometry">
       <rect>
-       <x>210</x>
-       <y>30</y>
+       <x>220</x>
+       <y>70</y>
        <width>241</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>Ejemplo:[edo,token-[edo,token]-[edo,token]</string>
+      <string>Ejemplo:[edo,token]-[edo,token]-[edo,token]</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_13">
@@ -189,7 +189,7 @@
     <widget class="QLabel" name="label_19">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>10</x>
        <y>70</y>
        <width>171</width>
        <height>16</height>
@@ -197,6 +197,45 @@
      </property>
      <property name="text">
       <string>El estado Inicial siempre sera el  0</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>10</y>
+       <width>121</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Nombre del automata:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_NombreAFN">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>10</y>
+       <width>181</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_StatusCrear">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>470</y>
+       <width>371</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
      </property>
     </widget>
    </widget>
@@ -320,7 +359,7 @@
      <property name="geometry">
       <rect>
        <x>290</x>
-       <y>100</y>
+       <y>80</y>
        <width>171</width>
        <height>23</height>
       </rect>
@@ -333,7 +372,7 @@
      <property name="geometry">
       <rect>
        <x>290</x>
-       <y>240</y>
+       <y>220</y>
        <width>171</width>
        <height>23</height>
       </rect>
@@ -355,24 +394,24 @@
       <string>Cerradura +</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_CerraduraEpsilon">
+    <widget class="QPushButton" name="pushButton_CerraduraKleene">
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>370</y>
+       <y>390</y>
        <width>171</width>
        <height>23</height>
       </rect>
      </property>
      <property name="text">
-      <string>Cerradura Eepsilon</string>
+      <string>Cerradura Kleene</string>
      </property>
     </widget>
     <widget class="QPushButton" name="pushButton_Opcional">
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>410</y>
+       <y>450</y>
        <width>171</width>
        <height>23</height>
       </rect>
@@ -404,6 +443,71 @@
       <string>Seleccionar automata para cerradura</string>
      </property>
     </widget>
+    <widget class="QLabel" name="label_StatusUnir">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>120</y>
+       <width>47</width>
+       <height>13</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_StatusConcat">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>260</y>
+       <width>47</width>
+       <height>13</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_StatusPositiva">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>360</y>
+       <width>151</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_StatusKleene">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>420</y>
+       <width>151</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_StatusOpcional">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>480</y>
+       <width>161</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="AnalizadorLexico">
     <attribute name="title">
@@ -412,9 +516,9 @@
     <widget class="QPushButton" name="pushButton_CrearAnalizador">
      <property name="geometry">
       <rect>
-       <x>150</x>
-       <y>310</y>
-       <width>141</width>
+       <x>170</x>
+       <y>390</y>
+       <width>161</width>
        <height>41</height>
       </rect>
      </property>
@@ -425,8 +529,8 @@
     <widget class="QLabel" name="label_11">
      <property name="geometry">
       <rect>
-       <x>50</x>
-       <y>60</y>
+       <x>40</x>
+       <y>310</y>
        <width>151</width>
        <height>16</height>
       </rect>
@@ -438,24 +542,142 @@
     <widget class="QLineEdit" name="lineEdit_AnalizadorNom">
      <property name="geometry">
       <rect>
-       <x>200</x>
-       <y>59</y>
+       <x>20</x>
+       <y>340</y>
        <width>191</width>
        <height>21</height>
       </rect>
      </property>
     </widget>
-    <widget class="QLabel" name="label_12">
+    <widget class="QLabel" name="label_StatusALexico">
      <property name="geometry">
       <rect>
-       <x>190</x>
-       <y>390</y>
-       <width>101</width>
+       <x>150</x>
+       <y>450</y>
+       <width>211</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
       <string>TextLabel</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_ALexicoAFN">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>40</y>
+       <width>191</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_20">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>40</y>
+       <width>171</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Seleccione el AFN</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_ClaseLexicoNom">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>110</y>
+       <width>161</width>
+       <height>20</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="spinBox_Token">
+     <property name="geometry">
+      <rect>
+       <x>360</x>
+       <y>100</y>
+       <width>42</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_9">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>80</y>
+       <width>141</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Nombre para la clase lexica</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_12">
+     <property name="geometry">
+      <rect>
+       <x>360</x>
+       <y>70</y>
+       <width>47</width>
+       <height>13</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Token</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_CrearClaseLexica">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>170</y>
+       <width>161</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Crear Clase Lexica</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_StatusCrearClaseLex">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>230</y>
+       <width>201</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_22">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>280</y>
+       <width>151</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Selecciones la clase lexica</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_ClasesLexicas">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>280</y>
+       <width>181</width>
+       <height>22</height>
+      </rect>
      </property>
     </widget>
    </widget>
@@ -476,7 +698,7 @@
       <string>Analizar</string>
      </property>
     </widget>
-    <widget class="QTextEdit" name="textEdit_4">
+    <widget class="QTextEdit" name="textEdit_EntradaCadena">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -499,7 +721,7 @@
       <string>Escriba la cadena</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_9">
+    <widget class="QLabel" name="label_StatusAnalisisCad">
      <property name="geometry">
       <rect>
        <x>40</x>
@@ -535,16 +757,148 @@
       <string>Selecciones un analizador lexico</string>
      </property>
     </widget>
+    <widget class="QTableView" name="tableView_2">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>260</y>
+       <width>441</width>
+       <height>192</height>
+      </rect>
+     </property>
+    </widget>
    </widget>
   </widget>
-  <widget class="QListView" name="listView">
+  <widget class="QTableWidget" name="tableWidget_Mostrar">
    <property name="geometry">
     <rect>
-     <x>560</x>
-     <y>130</y>
-     <width>161</width>
+     <x>550</x>
+     <y>160</y>
+     <width>601</width>
      <height>381</height>
     </rect>
+   </property>
+   <row>
+    <property name="text">
+     <string>1</string>
+    </property>
+   </row>
+   <row>
+    <property name="text">
+     <string>2</string>
+    </property>
+   </row>
+   <column>
+    <property name="text">
+     <string>Nombre</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Lenguaje</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Estadi Inicial</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Estados</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Estados Finales</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Transiciones</string>
+    </property>
+   </column>
+  </widget>
+  <widget class="QComboBox" name="comboBox_AFNMostrar">
+   <property name="geometry">
+    <rect>
+     <x>570</x>
+     <y>40</y>
+     <width>201</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox_ClaseLexicaMostrar">
+   <property name="geometry">
+    <rect>
+     <x>570</x>
+     <y>80</y>
+     <width>201</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox_AnalizadorMostrar">
+   <property name="geometry">
+    <rect>
+     <x>570</x>
+     <y>120</y>
+     <width>201</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_Mostrar">
+   <property name="geometry">
+    <rect>
+     <x>940</x>
+     <y>90</y>
+     <width>171</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Mostrar</string>
+   </property>
+  </widget>
+  <widget class="QRadioButton" name="radioButton_AFNs">
+   <property name="geometry">
+    <rect>
+     <x>790</x>
+     <y>40</y>
+     <width>82</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>AFNs</string>
+   </property>
+  </widget>
+  <widget class="QRadioButton" name="radioButton_ClaseLexica">
+   <property name="geometry">
+    <rect>
+     <x>790</x>
+     <y>80</y>
+     <width>111</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Clase Lexica</string>
+   </property>
+  </widget>
+  <widget class="QRadioButton" name="radioButton_Analizador">
+   <property name="geometry">
+    <rect>
+     <x>790</x>
+     <y>120</y>
+     <width>82</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Analizador</string>
    </property>
   </widget>
  </widget>
