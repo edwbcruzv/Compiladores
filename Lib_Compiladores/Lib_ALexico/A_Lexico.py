@@ -1,24 +1,127 @@
-from AFNe import *
+from Lib_Compiladores.Lib_ClaseLexica import ClaseLexica
 
 
-class convertAFD:
+class A_Lexico():
 
-    def __init__(self,afn):
+        # Nombre_A_Lexico:"NombreALexico"
+        # Clase_Lexica: ClaseLexica().objet
+        # Arg_Clase_Lexica_List: [Nombre_Clase_Lexica,Token,Arg_Clase_Lexica_List]
+    def __init__(self,Nombre_A_Lexico,Clase_Lexica=None):
+        # __Nombre_A_Lexico:"nombreALexico"
+        self.__Nombre_A_Lexico=Nombre_A_Lexico
+        # __Clase_Lexica:ClaseLexica().objet
+        self.__Clase_Lexica=object()
+        # __AFD: AFN_e().objet      tendra las propiedades de un AFD
+        self.__AFD=object()
+
+        #solo se define un nombre para terminos de busqueda
+        if Clase_Lexica==None:
+            return
+        # se verifica que sea una instancia de ClaseLExica
+        if not(isinstance(Clase_Lexica,ClaseLexica)):
+            return
+            
+        self.__Clase_Lexica=Clase_Lexica
+        #se llama a la funcion que se encarga de convertir el AFN a AFD
+
+        #self.__AFNtoAFD()
+    
+    def getNombreALexico(self):
+        return self.__Nombre_A_Lexico
+
+    ##solo se uniran los estados iniciales
+    def unionClasesLexicas(self,clase_lexica):
+        pass   
+
+##------INICIO DEL ALGORITMO DE ANALISIS DE UNA CADENA USANDO UN AFD----------
+    def analizarCadena(self,cadena):
+        list_cadena=list(cadena)
+
+        Lista_Lexemas=[]
+        Lexema_temp=[]
+
+        tam_cadena=len(list_cadena)
+        #inicio del algoritmo
+        #posicion del estado del afn
+        Estado_Actual=self.afd.getEdoInicial()
+        #nos indicara si pasamos por un estado de aceptacion
+        Bandera_Edo_Acept=False 
+        cursor_cadena=0 
+        
+        #mientras que no sea el fin de la cadena
+        while cursor_cadena==tam_cadena:
+            simbolo=list_cadena[cursor_cadena]
+
+            #ver si existe una transicion  del estado actual con el simbolo de la cadena actual
+            Estado_Destino,boleano=self.__existeTransicion(Estado_Actual,simbolo)
+            #si boolean el False hay un error
+            if boleano:
+                Lexema_temp.append(simbolo)
+                #si estado actual es un estado de aceptacion
+                if esestadoAceptacion(Estado_Actual):
+                    #print(Estado_Actual.getToken())
+                    Bandera_Edo_Acept=True
+                else:#no es estado de aceptacion
+                    Bandera_Edo_Acept=False 
+                #seguimos sin pasar por estado de aceptacion
+                Estado_Actual=Estado_Destino
+                cursor_cadena=cursor_cadena+1
+                
+
+            #no esiste ninguna transicion entonces hay un error
+            else:
+                #checar si se paso por un estado de aceptacion
+                if Bandera_Edo_Acept:
+                    #se descarga el lexema actual
+                    Lista_Lexemas.append(self.__nuevoLexema(Lexema_temp,Estado_Actual.token()))
+                    Lexema_temp=[]
+                    #posicion del estado del afd
+                    Estado_Actual=self.afd.getEdoInicial()
+                    
+                #no se ha pasado por ningun estado de aceptacion
+                else:
+                    #posicion del estado del afd
+                    Estado_Actual=self.afd.getEdoInicial()
+                    #se descarta el lexema
+                    Lexema_temp=[]
+                    
+        return Lista_Lexemas
+
+    def __nuevoLexema(self,Lexema_lista,token):
+        return ["".join(Lexema_lista),token]            
+            
+        #se Busca si existe una transicion en el afd 
+    def __existeTransicion(self,Estado_Actual,Simbolo):
+        
+        for T in self.afdTransiciones:
+            if T[0]==Estado_Actual and T[2]==Simbolo:
+                return T[1],True #si existe
+        #no existe
+        return [],False
+
+    def __lt__(self,a_lexico):
+        return self.Nombre_A_Lexico<a_lexico.Nombre_A_Lexico
+
+    def __le__(self,a_lexico):
+        return self.Nombre_A_Lexico<=a_lexico.Nombre_A_Lexico
+
+    def __eq__(self,a_lexico):
+        return self.Nombre_A_Lexico==a_lexico.Nombre_A_Lexico
+
+    def tablaAFD(self):
+        pass
+
+
+
+#---------INICIO DEL ALGORITMO Y FUNCIONES DE LA CONVERSION A AFD---------
+    def __AFNtoAFD(self):
         # Formato de la lista de conjuntos epsilon 
-        # Lista de conjuntos=[[sublista1],[sublista2],[sublista3],....]
-        # sublista=["Estado1","Estado2",...,"Estadon"]
-        self.conjuntos_list=[]
+        # Lista de conjuntos:[[sublista1],[sublista2],[sublista3],....]
+        #           sublista:["Estado1","Estado2",...,"Estadon"]
+        self.Conjunto_Epsilon_List=[]
 
-        self.afn=afn
-        self.Sigma=afn.Sigma
-        # Formato de la lista de transiciones 
-        # M=[[sublista1],[sublista2],[sublista3],....]
-        # sublista=["EstadoPrincipal","EstadoDestino","Simbolos"]
-        self.transiciones=self.afn.M
-
-        #inicio del proceso
-        self.__analisisDe()
- 
+        #inicio de la conversion a AFD
+        self.AFD=self.__analisisDe()
 
     #conjunto de estados destino al tener un "E" RECURSIVO
     #los estados se agregan a la variable conjunto recibido
@@ -81,7 +184,7 @@ class convertAFD:
         #se dara por hecho que por defecto todos los conjuntos estan ordenado
         #sino aplicar un sort()
         subindice_conjunto=0
-        for C in self.conjuntos_list:
+        for C in self.Conjunto_Epsilon_List:
             #se da por hecho que los conjuntos son diferentes
             #igualdad = False
             # La unica forma de que sean iguales es:
@@ -101,7 +204,7 @@ class convertAFD:
 
         #se a verificado con todos y al terminar se da por hecho que no se repite 
         #se agrega al la lista de conjuntos
-        self.conjuntos_list.append(conjunto)
+        self.Conjunto_Epsilon_List.append(conjunto)
         # y se regresa el subindice de la lista
         return subindice_conjunto-1
 
@@ -126,7 +229,7 @@ class convertAFD:
 
         #se toma como inicio el estado inicial del automata afn
         c_temp=self.__creaConjuntoEpsilon(self.afn.getEdoInicial())
-        self.conjuntos_list.append(c_temp)
+        self.Conjunto_Epsilon_List.append(c_temp)
 
         #se define las variables para el nuevo AFD
         #para ello se usa la clase AFN-e, pero tendra las propiedades
@@ -165,9 +268,9 @@ class convertAFD:
             for s in self.Sigma:
                 #se imprime el cunjunto que est esta revisando
                 print("Conjunto:",i,"Simbolos:",s)
-                for e in self.conjuntos_list[i]:
+                for e in self.Conjunto_Epsilon_List[i]:
                     print(e.__str__())
-                indice_conj=self.__irA(self.conjuntos_list[i],s)
+                indice_conj=self.__irA(self.Conjunto_Epsilon_List[i],s)
 
                 #ya que termino el proceso de la funcion irA()
                 #se empieza con la contruccion del AFD
@@ -183,7 +286,7 @@ class convertAFD:
             i=i+1
 
             #para el caso de que ya no existas conjuntos por analizar se rompe el ciclo para terminar
-            if i >= len(self.conjuntos_list):
+            if i >= len(self.Conjunto_Epsilon_List):
                 break
         #al terminar el analisis se definen los nuevos estados de aceptacion
         #de la lista de conjuntos, solo puede existir un estado de aceptacion
@@ -196,7 +299,7 @@ class convertAFD:
             if edo_afn.getToken() > 0:
             #al encontrar un estado de aceptacion del afn, ahora se buscaran en el conjunto
                 j=0 #subindice del conjunto
-                for conj_temp in self.conjuntos_list:
+                for conj_temp in self.Conjunto_Epsilon_List:
                     # e es estado a partir del afn
                     for e in conj_temp:
                         #si e existe como estado de aceptacion en afn
@@ -210,6 +313,4 @@ class convertAFD:
 
 
         #se crea el automata con las propiedadesya creadas
-        self.afd=AFN_e(afd_K,afd_Sigma,afd_S,afd_Z,afd_M)
-
-        
+        return AFN_e("AFD",afd_K,afd_Sigma,afd_S,afd_Z,afd_M)

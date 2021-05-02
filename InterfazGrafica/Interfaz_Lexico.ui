@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1160</width>
-    <height>565</height>
+    <height>564</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,7 +16,7 @@
   <widget class="QTabWidget" name="Pestanias">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>30</x>
      <y>10</y>
      <width>521</width>
      <height>541</height>
@@ -170,7 +170,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Ejemplo:[edo,token]-[edo,token]-[edo,token]</string>
+      <string>Ejemplo:edo,edo,edo,edo</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_13">
@@ -243,49 +243,6 @@
     <attribute name="title">
      <string>Operaciones</string>
     </attribute>
-    <widget class="QComboBox" name="comboBox_A1Unir">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>30</y>
-       <width>171</width>
-       <height>22</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="comboBox_A2Unir">
-     <property name="geometry">
-      <rect>
-       <x>290</x>
-       <y>30</y>
-       <width>171</width>
-       <height>22</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_UnionNom">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>100</y>
-       <width>171</width>
-       <height>20</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_14">
-     <property name="geometry">
-      <rect>
-       <x>220</x>
-       <y>30</y>
-       <width>47</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Unir con</string>
-     </property>
-    </widget>
     <widget class="QComboBox" name="comboBox_A2Concat">
      <property name="geometry">
       <rect>
@@ -319,19 +276,6 @@
       <string>Concatenar con</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_16">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>70</y>
-       <width>171</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Nombre de la union</string>
-     </property>
-    </widget>
     <widget class="QLineEdit" name="lineEdit_ConcatNom">
      <property name="geometry">
       <rect>
@@ -353,19 +297,6 @@
      </property>
      <property name="text">
       <string>Nombre de la concatenacion</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_Unir">
-     <property name="geometry">
-      <rect>
-       <x>290</x>
-       <y>80</y>
-       <width>171</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Unir</string>
      </property>
     </widget>
     <widget class="QPushButton" name="pushButton_Concat">
@@ -443,19 +374,6 @@
       <string>Seleccionar automata para cerradura</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_StatusUnir">
-     <property name="geometry">
-      <rect>
-       <x>290</x>
-       <y>120</y>
-       <width>47</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_StatusConcat">
      <property name="geometry">
       <rect>
@@ -508,6 +426,201 @@
       <string>TextLabel</string>
      </property>
     </widget>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>481</width>
+       <height>131</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Union</string>
+     </property>
+     <widget class="QComboBox" name="comboBox_A2Unir">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>20</y>
+        <width>171</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBox_A1Unir">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>20</y>
+        <width>171</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_14">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>20</y>
+        <width>47</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Unir con</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_UnionNom">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>80</y>
+        <width>171</width>
+        <height>20</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_16">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>50</y>
+        <width>171</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Nombre de la union</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_Unir">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>80</y>
+        <width>171</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Unir</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_StatusUnir">
+      <property name="geometry">
+       <rect>
+        <x>290</x>
+        <y>110</y>
+        <width>47</width>
+        <height>13</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>Clase Lexica</string>
+    </attribute>
+    <widget class="QComboBox" name="comboBox_AFN">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>70</y>
+       <width>191</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_ClaseLexicaNom">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>70</y>
+       <width>171</width>
+       <height>20</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_9">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>40</y>
+       <width>151</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Nombre Clase Lexica</string>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="spinBox">
+     <property name="geometry">
+      <rect>
+       <x>360</x>
+       <y>150</y>
+       <width>42</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_12">
+     <property name="geometry">
+      <rect>
+       <x>360</x>
+       <y>120</y>
+       <width>61</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Token</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_20">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>40</y>
+       <width>131</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Seleccionar AFN</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_CrearClaseLexica">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>300</y>
+       <width>181</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Crear Clase Lexica</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_StatusClaseLexica">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>370</y>
+       <width>191</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="AnalizadorLexico">
     <attribute name="title">
@@ -516,9 +629,9 @@
     <widget class="QPushButton" name="pushButton_CrearAnalizador">
      <property name="geometry">
       <rect>
-       <x>170</x>
-       <y>390</y>
-       <width>161</width>
+       <x>160</x>
+       <y>290</y>
+       <width>191</width>
        <height>41</height>
       </rect>
      </property>
@@ -530,7 +643,7 @@
      <property name="geometry">
       <rect>
        <x>40</x>
-       <y>310</y>
+       <y>40</y>
        <width>151</width>
        <height>16</height>
       </rect>
@@ -542,8 +655,8 @@
     <widget class="QLineEdit" name="lineEdit_AnalizadorNom">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>340</y>
+       <x>30</x>
+       <y>80</y>
        <width>191</width>
        <height>21</height>
       </rect>
@@ -552,104 +665,9 @@
     <widget class="QLabel" name="label_StatusALexico">
      <property name="geometry">
       <rect>
-       <x>150</x>
-       <y>450</y>
-       <width>211</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="comboBox_ALexicoAFN">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>40</y>
-       <width>191</width>
-       <height>22</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_20">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>40</y>
-       <width>171</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Seleccione el AFN</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit_ClaseLexicoNom">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>110</y>
-       <width>161</width>
-       <height>20</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="spinBox_Token">
-     <property name="geometry">
-      <rect>
-       <x>360</x>
-       <y>100</y>
-       <width>42</width>
-       <height>22</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_9">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>80</y>
-       <width>141</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Nombre para la clase lexica</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_12">
-     <property name="geometry">
-      <rect>
-       <x>360</x>
-       <y>70</y>
-       <width>47</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Token</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_CrearClaseLexica">
-     <property name="geometry">
-      <rect>
        <x>160</x>
-       <y>170</y>
-       <width>161</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Crear Clase Lexica</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_StatusCrearClaseLex">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>230</y>
-       <width>201</width>
+       <y>360</y>
+       <width>211</width>
        <height>16</height>
       </rect>
      </property>
@@ -660,8 +678,8 @@
     <widget class="QLabel" name="label_22">
      <property name="geometry">
       <rect>
-       <x>40</x>
-       <y>280</y>
+       <x>290</x>
+       <y>40</y>
        <width>151</width>
        <height>16</height>
       </rect>
@@ -673,8 +691,8 @@
     <widget class="QComboBox" name="comboBox_ClasesLexicas">
      <property name="geometry">
       <rect>
-       <x>260</x>
-       <y>280</y>
+       <x>280</x>
+       <y>80</y>
        <width>181</width>
        <height>22</height>
       </rect>
@@ -772,88 +790,18 @@
   <widget class="QTableWidget" name="tableWidget_Mostrar">
    <property name="geometry">
     <rect>
-     <x>550</x>
-     <y>160</y>
-     <width>601</width>
-     <height>381</height>
-    </rect>
-   </property>
-   <row>
-    <property name="text">
-     <string>1</string>
-    </property>
-   </row>
-   <row>
-    <property name="text">
-     <string>2</string>
-    </property>
-   </row>
-   <column>
-    <property name="text">
-     <string>Nombre</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>Lenguaje</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>Estadi Inicial</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>Estados</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>Estados Finales</string>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>Transiciones</string>
-    </property>
-   </column>
-  </widget>
-  <widget class="QComboBox" name="comboBox_AFNMostrar">
-   <property name="geometry">
-    <rect>
-     <x>570</x>
-     <y>40</y>
-     <width>201</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="comboBox_ClaseLexicaMostrar">
-   <property name="geometry">
-    <rect>
-     <x>570</x>
-     <y>80</y>
-     <width>201</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="comboBox_AnalizadorMostrar">
-   <property name="geometry">
-    <rect>
      <x>570</x>
      <y>120</y>
-     <width>201</width>
-     <height>22</height>
+     <width>581</width>
+     <height>421</height>
     </rect>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButton_Mostrar">
    <property name="geometry">
     <rect>
-     <x>940</x>
-     <y>90</y>
+     <x>930</x>
+     <y>60</y>
      <width>171</width>
      <height>23</height>
     </rect>
@@ -865,8 +813,8 @@
   <widget class="QRadioButton" name="radioButton_AFNs">
    <property name="geometry">
     <rect>
-     <x>790</x>
-     <y>40</y>
+     <x>570</x>
+     <y>60</y>
      <width>82</width>
      <height>17</height>
     </rect>
@@ -878,8 +826,8 @@
   <widget class="QRadioButton" name="radioButton_ClaseLexica">
    <property name="geometry">
     <rect>
-     <x>790</x>
-     <y>80</y>
+     <x>660</x>
+     <y>60</y>
      <width>111</width>
      <height>17</height>
     </rect>
@@ -892,7 +840,7 @@
    <property name="geometry">
     <rect>
      <x>790</x>
-     <y>120</y>
+     <y>60</y>
      <width>82</width>
      <height>17</height>
     </rect>
