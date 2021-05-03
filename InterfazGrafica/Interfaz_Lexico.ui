@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="Crear">
     <attribute name="title">
@@ -62,7 +62,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Numero de estados</string>
+      <string>Limite de estados</string>
      </property>
     </widget>
     <widget class="QTextEdit" name="textEdit_Lenguale">
@@ -98,7 +98,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Ejemplo:simbolo,simbolo,simbolo,[simboloinicial-simbolofinal],simbolo</string>
+      <string>Formato: simbolo,simbolo,simbolo,[simboloinicial-simbolofinal],simbolo</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_5">
@@ -124,7 +124,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Ejemplo: [edo,edo,simbolo]-[edo,edo,simbolo-[edo,edo,simbolo]</string>
+      <string>Formato: [edo,edo,simbolo]-[edo,edo,simbolo-[edo,edo,simbolo]</string>
      </property>
     </widget>
     <widget class="QTextEdit" name="textEdit_Transiciones">
@@ -170,7 +170,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Ejemplo:edo,edo,edo,edo</string>
+      <string>Formato: edo-edo-edo-edo</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_13">
@@ -559,7 +559,7 @@
       <string>Nombre Clase Lexica</string>
      </property>
     </widget>
-    <widget class="QSpinBox" name="spinBox">
+    <widget class="QSpinBox" name="spinBox_Token">
      <property name="geometry">
       <rect>
        <x>360</x>

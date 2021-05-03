@@ -1,4 +1,5 @@
-from Lib_Compiladores.Lib_AFN_e import Estado,Transicion
+from Lib_Compiladores.Lib_AFN_e.Estado import Estado
+from Lib_Compiladores.Lib_AFN_e.Transicion import Transicion
 import copy
 
 class AFN_e():
@@ -162,7 +163,7 @@ class AFN_e():
         
         #ahora se unira el nuevo estado inicial
         #con el estado inicial de 'automata2'
-        edo_init2=automata2.getEdoInicial()
+        edo_init2=automata2.getEstadoInicial()
         self.__ListTransicionesObjs([[nuevo_edo_inicial.getNombre(),edo_init2.getNombre(),"E"]])
 
         #redefiniendo los nuevos estados iniciales creados
@@ -194,7 +195,7 @@ class AFN_e():
         tam1=len(self.getEstadosAceptacion())
         for i in range(tam1):
             edo_final=self.getEstadosAceptacion()[i]
-            self.__ListTransicionesObjs([[edo_final.getNombre(),automata2.getEdoInicial().getNombre(),"E"]])
+            self.__ListTransicionesObjs([[edo_final.getNombre(),automata2.getEstadoInicial().getNombre(),"E"]])
 
         #se crea el nuevo estado final
         nuevo_edo_final=self.nuevoEdo()
@@ -221,7 +222,7 @@ class AFN_e():
         #todos estos se uniran al nuevo estado final
         tam=len(self.getEstadosAceptacion())
         for i in range(tam):
-            edo_final1=self.Z[i]
+            edo_final1=self.getEstadosAceptacion()[i]
             t=[edo_final1.getNombre(),nuevo_edo_final.getNombre(),"E"]
             self.__ListTransicionesObjs([t])
         
@@ -383,28 +384,72 @@ class AFN_e():
         #se ordenan las transiciones por medio del estado principal
         self.getTransiciones().sort()
 #------------------------------------------------------------------------------
-            
-        
-    def mostrarAutomata(self):
-        print("Nombre de AFN :",self.getNombreAFN())
+    def toDataBase(self):
+        nombre_AFN,str_lenguaje,str_edo_inicial,num_estados,str_estados_aceptacion,str_transiciones=self.__str__()
+        return "|||%s__%s__%s__%s__%s__%s" %(nombre_AFN,str_lenguaje,
+        str_edo_inicial,num_estados,str_estados_aceptacion,str_transiciones)
 
-        print("Conjunto de Estados(Objeto) no vacios")
+    def mostrarAutomata(self):
+        nombre_AFN,str_lenguaje,str_edo_inicial,num_estados,str_estados_aceptacion,str_transiciones=self.__str__()
+        print("Nombre de AFN :",nombre_AFN)
+
+        print("Alfabeto que acepta el automata")
+        print(str_lenguaje)
+
+        print("Estado de inicio del automata")
+        print(str_edo_inicial)
+
+        print("Conjunto de Estados(Objeto) no vacios :",num_estados)
         for e in self.getEstados():
            print(e.__str__())
 
-        print("Alfabeto que acepta el automata")
-        print(self.getAlfabeto())
-
-        print("Estado de inicio del automata")
-        print(self.getEstadoInicial().__str__())
-
         print("Conjunto de Estados(Objeto) de aceptacion")
-        for e in self.getEstadosAceptacion():
-            print(e.__str__())
+        print(str_estados_aceptacion)
 
         print("Conjunto de Transiciones(Objeto)")
-        for e in self.getTransiciones():
-            print(e.__str__())
+        print(str_transiciones)
 
     def __str__(self):
-        pass
+        #FORMATO EN EL QUE NOS BASAREMOS 
+
+        # nombre_AFN: "nombreAFN"
+        # str_lenguaje: "simbolo1,simbolo2,simbolo3"
+        # num_estados: num  (es un int)
+        # str_edo_inicial: "edo"
+        # str_estados_aceptacion: "edo1-edo2-edo3" o "[edo1,token]-[edo2,token]-[edo3,token]"
+        # str_transiciones:"[edo,edo,simbolo]-[edo,edo,simbolo]-[edo,edo,simbolo]"
+        
+        nombre_AFN=self.getNombreAFN()
+
+        str_lenguaje=""
+        i=1
+        for s in self.getAlfabeto():
+            str_lenguaje+=s
+            if i==len(self.getAlfabeto()):
+                break
+            str_lenguaje+=","
+            i+=1
+
+        str_edo_inicial=self.getEstadoInicial().__str__()
+
+        num_estados=str(len(self.getEstados())-1)
+
+        str_estados_aceptacion=""
+        i=1
+        for e in self.getEstadosAceptacion():
+            str_estados_aceptacion+=e.__str__()
+            if i==len(self.getEstadosAceptacion()):
+                break
+            str_estados_aceptacion+="-"
+            i+=1
+        
+        str_transiciones=""
+        i=1
+        for t in self.getTransiciones():
+            str_transiciones+=t.__str__()
+            if i==len(self.getTransiciones()):
+                break
+            str_transiciones+="-"
+            i+=1
+
+        return nombre_AFN,str_lenguaje,str_edo_inicial,num_estados,str_estados_aceptacion,str_transiciones

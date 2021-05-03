@@ -4,8 +4,11 @@ from PyQt5 import *
 from PyQt5.QtWidgets import *
 from InterfazGrafica.Interfaz_Lexico import Ui_Form #>> pyuic5 -x Interfaz_Lexico.ui -o Interfaz_Lexico.py 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from Lib_Compiladores.Lib_AFN_e.AFN_e import AFN_e
+from Lib_Compiladores.Lib_ClaseLexica.ClaseLexica import ClaseLexica
+from Lib_Compiladores.Lib_ALexico.A_Lexico import A_Lexico
 from BaseDatos import BaseDatos
+import copy
 
 class Ventana(QtWidgets.QWidget):
     
@@ -34,46 +37,57 @@ class Ventana(QtWidgets.QWidget):
     def crearAutomataAFN(self):
         print("Creando afn")
         nombreAFN=self.ui.lineEdit_NombreAFN.text()
-        num_estados=self.ui.spinBox_num_Estados.value()
+        num_estados=str(self.ui.spinBox_num_Estados.value())
         str_lenguaje=self.ui.textEdit_Lenguale.toPlainText()
         str_estados_aceptacion=self.ui.textEdit_EstadosAceptacion.toPlainText()
         str_transiciones=self.ui.textEdit_Transiciones.toPlainText()
 
+        print(nombreAFN)
+        print(num_estados)
+        print(str_lenguaje)
+        print("0")
+        print(str_estados_aceptacion)
+        print(str_transiciones)
+
         #se valida el automata
-        afn=CrearAutomataAFN(nombreAFN,num_estados,str_estados_aceptacion,str_lenguaje,str_transiciones)
+        afn,respuesta=self.db.CrearAutomataAFN(nombreAFN,num_estados,str_lenguaje,"0",str_estados_aceptacion,str_transiciones)
 
         #Se manda un status a la interfaz grafica
-        self.ui.label_StatusCrear.setText("Automata Creado")
+        self.ui.label_StatusCrear.setText(respuesta)
+        #su hubo un error se termina el proceso
+        if not(isinstance(afn,AFN_e)):
+            return        
+        
         #se muestra el automata en consola
         afn.mostrarAutomata()
+
+        print("DataBase:",afn.toDataBase())
         #se agrega a los combobox
-        self.__agregarAComboBox_Automatas(automata)
+        self.__agregarAComboBox_Automatas(afn.getNombreAFN())
         #Se almacena el automata creado en la base de datos
         self.db.agregarAFN(afn)
 
-        
-
     def crearClaseLexica(self):
         #nombre de la nueva clase lexica
-        nombre_clase_lexica=self.ui.lineEdit_ClaseLexicoNom.text()
+        nombre_clase_lexica=self.ui.lineEdit_ClaseLexicaNom.text()
         #token de la calse lexica
         token=self.ui.spinBox_Token.value()
         #nombre de el automata 
-        nombre_afn=self.ui.comboBox_ALexicoAFN.currentText()
+        nombre_afn=self.ui.comboBox_AFN.currentText()
         #se busca el afn para la clase lexica
-        afn=obtenerAFN(self,nombre_AFN)
+        afn=copy.copy(self.db.obtenerAFN(nombre_afn))
 
         #se validan los datos para la nueva Clase Lexica
-        clase_lexica=CrearClaseLexica()    
+        clase_lexica=self.db.CrearClaseLexica(nombre_clase_lexica,token,afn)    
 
         
 
         # status de la creacion de la clase lexica
-        self.ui.label_StatusCrearClaseLex.setText("hecho")
+        self.ui.label_StatusClaseLexica.setText("hecho")
         #se muestra el automata en consola
         afn.mostrarAutomata()
         #se agrega a los combobox de clase lexica
-        self.ui.comboBox_ClasesLexicas.addItem(clase_lexico)
+        self.ui.comboBox_ClasesLexicas.addItem(clase_lexico.getNombreALexico())
         #se almacena en la base de datos
         self.db.agregarClaseLexica(clase_lexica)
         
@@ -82,18 +96,18 @@ class Ventana(QtWidgets.QWidget):
         #nombre del nuevo analizador lexico
         nombre_a_lexico=self.ui.lineEdit_AnalizadorNom.text()
         #nombre de la clase lexica para el analizador lexico
-        nombre_clase_lexica=self.ui.comboBox_ClasesLexicas.currentText()
+        nombre_clase_lexica=self.ui.comboBox_AFN.currentText()
         #se busca la clase lexica
-        clase_lexica=obtenerClaseLexica(self,nombre_clase_lexica)
+        clase_lexica=self.db.obtenerClaseLexica(self,nombre_clase_lexica)
         
-        a_lexico=CrearA_Lexico()
+        a_lexico=self.db.CrearA_Lexico()
 
         #se manda un status de creacion
         self.ui.label_StatusALexico.setText("hecho")
         #se muestra el automata en consola
         afn.mostrarAutomata()
         #se agrega a el combobox del analizadores
-        self.ui.comboBox_Analizadores.addItem(a_lexico)
+        self.ui.comboBox_Analizadores.addItem(a_lexico.getNombreALexico())
         #se almacena en la base de datos
         self.db.agregarALexico(a_lexico)
     
@@ -103,53 +117,50 @@ class Ventana(QtWidgets.QWidget):
         nombre_union=self.ui.lineEdit_UnionNom.text()
         nombre_A1=self.ui.comboBox_A1Unir.currentText()
         nombre_A2=self.ui.comboBox_A2Unir.currentText()
-
-        temp_A1=AFN_e(nombre_A1)
-        temp_A2=AFN_e(nombre_A2)
         
-        A1=self.Lista_De_Automatas[self.Lista_De_Automatas.index(temp_A1)]
-        A2=self.Lista_De_Automatas[self.Lista_De_Automatas.index(temp_A2)]
+        A1=self.db.obtenerAFN(nombre_A1)
+        A2=self.db.obtenerAFN(nombre_A2)
         
         A1.unirCon(A2)
-        if not(nombre_union ==""):
-            A1.Nombre_Automata=nombre_union
-        self.__eliminarAutomataLista(A2)
+        # if not(nombre_union ==""):
+        #     A1.Nombre_Automata=nombre_union
         A1.mostrarAutomata()
 
     def concatenar(self):
         nombre_concat=self.ui.lineEdit_ConcatNom.text()
         nombre_A1=self.ui.comboBox_A1Concat.currentText()
         nombre_A2=self.ui.comboBox_A2Concat.currentText()
-        temp_A1=AFN_e(nombre_A1)
-        temp_A2=AFN_e(nombre_A2)
-        
-        A1=self.Lista_De_Automatas[self.Lista_De_Automatas.index(temp_A1)]
-        A2=self.Lista_De_Automatas[self.Lista_De_Automatas.index(temp_A2)]
+
+        A1=self.db.obtenerAFN(nombre_A1)
+        A2=self.db.obtenerAFN(nombre_A2)
 
         A1.concatCon(A2)
-        if not(nombre_concat ==""):
-            A1.Nombre_Automata=nombre_concat
-        self.__eliminarAutomataLista(A2)
+        # if not(nombre_concat ==""):
+        #     A1.Nombre_Automata=nombre_concat
+
         A1.mostrarAutomata()
 
     def cerradura_Kleene(self):
         nombre_A=self.ui.comboBox_ACerradura.currentText()
-        temp_A=AFN_e(nombre_A)
-        A=self.Lista_De_Automatas[self.Lista_De_Automatas.index(temp_A)]
+
+        A=self.db.obtenerAFN(nombre_A)
+
         A.cerraduraKleene()
         A.mostrarAutomata()
 
     def cerradura_Positiva(self):
         nombre_A=self.ui.comboBox_ACerradura.currentText()
-        temp_A=AFN_e(nombre_A)
-        A=self.Lista_De_Automatas[self.Lista_De_Automatas.index(temp_A)]
+
+        A=self.db.obtenerAFN(nombre_A)
+        
         A.cerraduraPositiva()
         A.mostrarAutomata()
 
     def opcional(self):
         nombre_A=self.ui.comboBox_ACerradura.currentText()
-        temp_A=AFN_e(nombre_A)
-        A=self.Lista_De_Automatas[self.Lista_De_Automatas.index(temp_A)]
+
+        A=self.db.obtenerAFN(nombre_A)
+
         A.opcion()
         A.mostrarAutomata()
 ##*************************************Fin de Pestania de operaciones******
@@ -182,26 +193,24 @@ class Ventana(QtWidgets.QWidget):
 
 
 ##*****************************************Combobox de AFN******
-    def __agregarAComboBox_Automatas(self,automata):
-        self.ui.comboBox_A1Unir.addItem(automata.Nombre_Automata)
-        self.ui.comboBox_A2Unir.addItem(automata.Nombre_Automata)
-        self.ui.comboBox_A1Concat.addItem(automata.Nombre_Automata)
-        self.ui.comboBox_A2Concat.addItem(automata.Nombre_Automata)
-        self.ui.comboBox_ACerradura.addItem(automata.Nombre_Automata)
+    def __agregarAComboBox_Automatas(self,nombre_afn):
+        self.ui.comboBox_A1Unir.addItem(nombre_afn)
+        self.ui.comboBox_A2Unir.addItem(nombre_afn)
+        self.ui.comboBox_A1Concat.addItem(nombre_afn)
+        self.ui.comboBox_A2Concat.addItem(nombre_afn)
+        self.ui.comboBox_ACerradura.addItem(nombre_afn)
 
-        self.ui.comboBox_ALexicoAFN.addItem(automata.Nombre_Automata)
+        self.ui.comboBox_AFN.addItem(nombre_afn)
 
+    def __eliminarAComboBox_Automatas(self,nombre_afn):
 
-    def __eliminarAComboBox_Automatas(self,automata):
-
-        self.ui.comboBox_A1Unir.removeItem(self.ui.comboBox_A1Unir.findText(automata.Nombre_Automata))
-        self.ui.comboBox_A2Unir.removeItem(self.ui.comboBox_A2Unir.findText(automata.Nombre_Automata))
-        self.ui.comboBox_A1Concat.removeItem(self.ui.comboBox_A1Concat.findText(automata.Nombre_Automata))
-        self.ui.comboBox_A2Concat.removeItem(self.ui.comboBox_A2Concat.findText(automata.Nombre_Automata))
-        self.ui.comboBox_ACerradura.removeItem(self.ui.comboBox_ACerradura.findText(automata.Nombre_Automata))
+        self.ui.comboBox_A1Unir.removeItem(self.ui.comboBox_A1Unir.findText(nombre_afn))
+        self.ui.comboBox_A2Unir.removeItem(self.ui.comboBox_A2Unir.findText(nombre_afn))
+        self.ui.comboBox_A1Concat.removeItem(self.ui.comboBox_A1Concat.findText(nombre_afn))
+        self.ui.comboBox_A2Concat.removeItem(self.ui.comboBox_A2Concat.findText(nombre_afn))
+        self.ui.comboBox_ACerradura.removeItem(self.ui.comboBox_ACerradura.findText(nombre_afn))
         
-        self.ui.comboBox_ALexicoAFN.removeItem(self.ui.comboBox_ACerradura.findText(automata.Nombre_Automata))
-
+        self.ui.comboBox_AFN.removeItem(self.ui.comboBox_ACerradura.findText(nombre_afn))
 ##*****************************************Fin de Combobox de AFN******
 
 

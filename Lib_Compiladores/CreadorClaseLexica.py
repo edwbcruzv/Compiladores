@@ -1,4 +1,4 @@
-from Lib_Compiladores.Lib_ClaseLexica import ClaseLexica
+from Lib_Compiladores.Lib_ClaseLexica.ClaseLexica import ClaseLexica
 
 class CreadorClaseLexica:
     

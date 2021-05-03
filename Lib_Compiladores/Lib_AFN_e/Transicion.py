@@ -43,6 +43,6 @@ class Transicion:
 
     def __str__(self):
 
-        return "s%s -> s%s [label=\"%s\"] " %(
+        return "[%s,%s,%s]" %(
             self.EstadoPrincipal.getNombre(),self.EstadoDestino.getNombre(),self.Simbolo.__str__())
             

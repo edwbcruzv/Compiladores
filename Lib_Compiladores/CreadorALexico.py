@@ -1,4 +1,4 @@
-from Lib_Compiladores.Lib_ALexico import A_Lexico
+from Lib_Compiladores.Lib_ALexico.A_Lexico import A_Lexico
 
 
 class CreadorALexico:

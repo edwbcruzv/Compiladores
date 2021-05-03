@@ -46,7 +46,7 @@ class BaseDatos(CreadorAFNe,CreadorClaseLexica,CreadorALexico):
     def obtenerAFN(self,nombre_AFN):
         temp_A=AFN_e(nombre_AFN)
         
-        afn=self.Lista_De_Automatas[self.Lista_De_Automatas.index(temp_A)]
+        afn=self.Lista_De_AFN[self.Lista_De_AFN.index(temp_A)]
         return afn
 
     def obtenerClaseLexica(self,nombre_clase_lexica):
@@ -65,9 +65,10 @@ class BaseDatos(CreadorAFNe,CreadorClaseLexica,CreadorALexico):
     def agregarAFN(self,AFN_e_obj):
         # se agrega a la carpeta
         nombre_archivo=AFN_e_obj.getNombreAFN()
-        archivo=open(self.__CarpetaAFNs+nombre_archivo+".afn","w")
 
-        self.Lista_De_AFN.append(AFN_e_obj)
+        #archivo=open(self.__CarpetaAFNs+nombre_archivo+".afn","w")
+
+        self.Lista_De_AFN.append(AFN_e_obj) 
         self.Lista_De_AFN.sort()
 
     def quitarAFN(self,nombre_archivo):
@@ -79,7 +80,7 @@ class BaseDatos(CreadorAFNe,CreadorClaseLexica,CreadorALexico):
     def agregarClaseLexica(self,Clase_Lexica_obj):
         # se agrega a la carpeta
         nombre_archivo=Clase_Lexica_obj.getNombreClaseLexica()
-        archivo=open(self.__CarpetaClasesLexicas+nombre_archivo+".clx","w")
+        #archivo=open(self.__CarpetaClasesLexicas+nombre_archivo+".clx","w")
 
         self.Lista_De_Clases_Lexicas.append(Clase_Lexica_obj)
         self.Lista_De_Clases_Lexicas.sort()
@@ -93,7 +94,7 @@ class BaseDatos(CreadorAFNe,CreadorClaseLexica,CreadorALexico):
     def agregarALexico(self,A_Lexico_e_obj):
         # se agrega a la carpeta
         nombre_archivo=A_Lexico_e_obj.getNombreALexico()
-        archivo=open(self.__CarpetaALexicos+nombre_archivo+".alx","w")
+        #archivo=open(self.__CarpetaALexicos+nombre_archivo+".alx","w")
 
         self.Lista_De_A_Lexicos.append(A_Lexico_e_obj)
         self.Lista_De_A_Lexicos.sort()

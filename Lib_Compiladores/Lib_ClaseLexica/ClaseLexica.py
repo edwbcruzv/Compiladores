@@ -46,6 +46,18 @@ class ClaseLexica():
     def getEstadoAceptacion(self):
         return self.__AFN.getEstadoAceptacion()[0]
 
+    def toDataBase():
+        nombre,token,estado_acept=self.__str__()
+        return "%s__%s__%s__%s" %(nombre,token,estado_acept,self.getAFN().toDataBase())
+
+    def mostrarClaseLexica(self):
+        nombre,token,estado_acept=self.__str__()
+        print("Nombre Clase Lexica:",nombre)
+
+        print("Token:",token)
+
+        print("Estado de Aceptacion",estado_acept)
+
     def __str__(self):
 
-        pass
+        return self.getNombreClaseLexica(),str(self.getToken()),self.getEstadoAceptacion().__str__()
