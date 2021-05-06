@@ -4,17 +4,16 @@ from Lib_Compiladores.Lib_ClaseLexica import ClaseLexica
 class A_Lexico():
 
         # Nombre_A_Lexico:"NombreALexico"
-        # Clase_Lexica: ClaseLexica().objet
-        # Arg_Clase_Lexica_List: [Nombre_Clase_Lexica,Token,Arg_Clase_Lexica_List]
+        # Clase_Lexica: [ClaseLexica1(),ClaseLexica2(),.....]
     def __init__(self,Nombre_A_Lexico,Clase_Lexica=None):
         # __Nombre_A_Lexico:"nombreALexico"
         self.__Nombre_A_Lexico=Nombre_A_Lexico
         # __Clase_Lexica:ClaseLexica().objet
-        self.__Clase_Lexica=object()
+        self.__Lista_Clases_Lexicas=[]
         # __AFD: AFN_e().objet      tendra las propiedades de un AFD
         self.__AFD=object()
 
-        #solo se define un nombre para terminos de busqueda
+        #solo se define un nombre para terminos de busqueda o definir
         if Clase_Lexica==None:
             return
         # se verifica que sea una instancia de ClaseLExica

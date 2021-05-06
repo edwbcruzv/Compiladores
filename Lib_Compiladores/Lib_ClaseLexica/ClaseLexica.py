@@ -1,4 +1,4 @@
-from Lib_Compiladores.Lib_AFN_e import AFN_e
+from Lib_Compiladores.Lib_AFN_e.AFN_e import AFN_e
 import copy
 
 class ClaseLexica():
@@ -18,20 +18,21 @@ class ClaseLexica():
         #solo se crea la instancia para fines de busqueda 
         if Token==None and AFN==None:
             return
-
+        
         #en el caso de no ser un AFN_e
         if not(isinstance(AFN,AFN_e)):
             return
-        self.__AFN=copy.copy(AFN)
+        self.__AFN=copy.deepcopy(AFN)
+        self.__Token=Token
         #el toquen no puede ser <= 0
-        if Token>0:
+        if self.__Token>0:
             self.__definirToken(Token)
 
     def __definirToken(self,Token):
         #se le define un unico estado de aceptacion al automata
         self.getAFN().agregarEstadoFinal()
         #a su estado de aceptacion se le da valor al token
-        self.getAFN().getEstadoAceptacion()[0].setToken(Token)
+        self.getEstadoAceptacion().setToken(Token)
     
 
     def getNombreClaseLexica(self):
@@ -44,20 +45,31 @@ class ClaseLexica():
         return self.__AFN
 
     def getEstadoAceptacion(self):
-        return self.__AFN.getEstadoAceptacion()[0]
+        return self.__AFN.getEstadosAceptacion()[0]
 
-    def toDataBase():
-        nombre,token,estado_acept=self.__str__()
-        return "%s__%s__%s__%s" %(nombre,token,estado_acept,self.getAFN().toDataBase())
+##***********************************************************
+    def __lt__(self, clase_lexica):
+        return self.getNombreClaseLexica() < clase_lexica.getNombreClaseLexica()
+
+    def __le__(self, clase_lexica):
+        return self.getNombreClaseLexica() <= clase_lexica.getNombreClaseLexica()
+
+    def __eq__(self, clase_lexica):
+        return self.getNombreClaseLexica() == clase_lexica.getNombreClaseLexica()
+##************************************************************
+    def toDataBase(self):
+        nombre,token=self.__str__()
+        return "||||%s__%s__%s" %(nombre,token,self.getAFN().toDataBase())
 
     def mostrarClaseLexica(self):
-        nombre,token,estado_acept=self.__str__()
+        nombre,token=self.__str__()
         print("Nombre Clase Lexica:",nombre)
 
         print("Token:",token)
 
-        print("Estado de Aceptacion",estado_acept)
+        print("AFN asociado:")
+        self.getAFN().mostrarAutomata()
 
     def __str__(self):
-
-        return self.getNombreClaseLexica(),str(self.getToken()),self.getEstadoAceptacion().__str__()
+        nombre_AFN, num_estados, str_lenguaje, str_edo_inicial, str_estados_aceptacion, str_transiciones = self.getAFN().__str__()
+        return self.getNombreClaseLexica(), str(self.getToken()), nombre_AFN, num_estados, str_lenguaje, str_edo_inicial, str_estados_aceptacion, str_transiciones

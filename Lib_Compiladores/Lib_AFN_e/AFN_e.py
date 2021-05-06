@@ -79,6 +79,8 @@ class AFN_e():
 
         #pasando la referencia del nuevo estado en base
         #al conjunto de estados
+        #se atualiza el tamano
+        len_edos=len(self.getEstados())
         return self.getEstados()[len_edos-1]
 
     def agregarEstadoFinal(self):
@@ -91,9 +93,10 @@ class AFN_e():
 
         #redefiniendo los nuevos estados finales creados
         self.setEstadosAceptacion([nuevo_edo_final])
+
     #se unen los automatas a partir de sus estados iniciales
     def unionEspecial(self,AFN):
-        automata2=copy.copy(AFN)
+        automata2=copy.deepcopy(AFN)
 
         #antes de hacer la union se debe de renombrar todos los estados del automata2
         self_tam=len(self.getEstados()) #cantidad de estados que tiene este automata
@@ -119,7 +122,7 @@ class AFN_e():
 
     #Nos permite unir el automata actual con otro automata que se reciba como parametro
     def unirCon(self,AFN):
-        automata2=copy.copy(AFN)
+        automata2=copy.deepcopy(AFN)
 
         #se crea el nuevo estado inicial
         nuevo_edo_inicial=self.nuevoEdo()
@@ -172,7 +175,7 @@ class AFN_e():
         self.setEstadosAceptacion([nuevo_edo_final])
 
     def concatCon(self,AFN):
-        automata2=copy.copy(AFN)
+        automata2=copy.deepcopy(AFN)
 
         #antes de hacer la concatenacion  se debe de renombrar todos los estados edel automata2
         self_tam=len(self.getEstados()) #cantidad de estados que tiene este automata
@@ -187,26 +190,23 @@ class AFN_e():
         self.getTransiciones().extend(automata2.getTransiciones())
         #ahora se unen los afabetos
         self.getAlfabeto().extend(automata2.getAlfabeto())
-        
 
         #si este automata tiene mas estados finales
         #todos estos se uniran al estado inicial de
         # 'automata2'
-        tam1=len(self.getEstadosAceptacion())
-        for i in range(tam1):
-            edo_final=self.getEstadosAceptacion()[i]
-            self.__ListTransicionesObjs([[edo_final.getNombre(),automata2.getEstadoInicial().getNombre(),"E"]])
+        for e in self.getEstadosAceptacion():
+            self.__ListTransicionesObjs([[e.getNombre(),automata2.getEstadoInicial().getNombre(),"E"]])
 
         #se crea el nuevo estado final
         nuevo_edo_final=self.nuevoEdo()
 
+        print("-----------------Nuevo estado final agregado :",nuevo_edo_final.__str__())
+
 
         #si el 'automata2' tiene mas estados finales
         #todos estos se inicial al nuevo estado final
-        tam2=len(automata2.getEstadosAceptacion())
-        for i in range(tam2):
-            edo_final2=automata2.getEstadosAceptacion()[i]
-            self.__ListTransicionesObjs([[edo_final2.getNombre(),nuevo_edo_final.getNombre(),"E"]])
+        for e in automata2.getEstadosAceptacion():
+            self.__ListTransicionesObjs([[e.getNombre(),nuevo_edo_final.getNombre(),"E"]])
 
         #redefiniendo los nuevos estados finales creados
         self.setEstadosAceptacion([nuevo_edo_final])
@@ -254,8 +254,8 @@ class AFN_e():
 
         #redefiniendo los nuevos estados iniciales creados
         #redefiniendo los nuevos estados finales creados
-        self.setEstadoInicial(edo_init)
-        self.setEstadosAceptacion([edo_final])
+        # self.setEstadoInicial(edo_init)
+        # self.setEstadosAceptacion([edo_final])
 
     def opcion(self):
         #se crea el nuevo estado final
@@ -274,7 +274,7 @@ class AFN_e():
         self.__ListTransicionesObjs([t])
 
         #solo se redefine el estado final 
-        self.Z=[nuevo_edo_final] 
+        self.setEstadosAceptacion([nuevo_edo_final])
 
 #-------------------------SET'S Y GET'S--------------------------
     def setNombreAFN(self,Nombre_AFN):
@@ -358,7 +358,7 @@ class AFN_e():
             #y se agregara a la transicion, pero tomando el estado de la lista
             for e in self.getEstados():
                 if e==edo:    
-                    self.getEstadosAceptacion().append(edo)
+                    self.getEstadosAceptacion().append(e)
             #En caso de no existir un estado que viene en las transiciones no se agregara
 
         self.getEstadosAceptacion().sort()
@@ -385,13 +385,17 @@ class AFN_e():
         self.getTransiciones().sort()
 #------------------------------------------------------------------------------
     def toDataBase(self):
-        nombre_AFN,str_lenguaje,str_edo_inicial,num_estados,str_estados_aceptacion,str_transiciones=self.__str__()
-        return "|||%s__%s__%s__%s__%s__%s" %(nombre_AFN,str_lenguaje,
-        str_edo_inicial,num_estados,str_estados_aceptacion,str_transiciones)
+        nombre_AFN, num_estados, str_lenguaje, str_edo_inicial, str_estados_aceptacion, str_transiciones = self.__str__()
+        return "|||%s__%s__%s__%s__%s__%s" % (nombre_AFN, num_estados, str_lenguaje, 
+        str_edo_inicial, str_estados_aceptacion, str_transiciones)
 
     def mostrarAutomata(self):
-        nombre_AFN,str_lenguaje,str_edo_inicial,num_estados,str_estados_aceptacion,str_transiciones=self.__str__()
+        nombre_AFN, num_estados, str_lenguaje, str_edo_inicial, str_estados_aceptacion, str_transiciones = self.__str__()
         print("Nombre de AFN :",nombre_AFN)
+
+        print("Conjunto de Estados(Objeto) no vacios :", num_estados)
+        for e in self.getEstados():
+           print(e.__str__())
 
         print("Alfabeto que acepta el automata")
         print(str_lenguaje)
@@ -399,27 +403,42 @@ class AFN_e():
         print("Estado de inicio del automata")
         print(str_edo_inicial)
 
-        print("Conjunto de Estados(Objeto) no vacios :",num_estados)
-        for e in self.getEstados():
-           print(e.__str__())
-
         print("Conjunto de Estados(Objeto) de aceptacion")
         print(str_estados_aceptacion)
 
         print("Conjunto de Transiciones(Objeto)")
         print(str_transiciones)
 
+
+        # print("Alfabeto que acepta el automata")
+        # print(self.getAlfabeto())
+        # print("Estado de inicio del automata")
+        # print(self.getEstadoInicial().__str__())
+        # print("Conjunto de Estados(Objeto) no vacios")
+        # for e in self.getEstados():
+        #    print(e.__str__())
+        # print("Conjunto de Estados(Objeto) de aceptacion")
+        # for e in self.getEstadosAceptacion():
+        #     print(e.__str__())
+
+        # print("Conjunto de Transiciones(Objeto)")
+        # for e in self.getTransiciones():
+        #     print(e.__str__()) 
+            
+
     def __str__(self):
         #FORMATO EN EL QUE NOS BASAREMOS 
 
         # nombre_AFN: "nombreAFN"
-        # str_lenguaje: "simbolo1,simbolo2,simbolo3"
         # num_estados: num  (es un int)
+        # str_lenguaje: "simbolo1,simbolo2,simbolo3"
         # str_edo_inicial: "edo"
         # str_estados_aceptacion: "edo1-edo2-edo3" o "[edo1,token]-[edo2,token]-[edo3,token]"
         # str_transiciones:"[edo,edo,simbolo]-[edo,edo,simbolo]-[edo,edo,simbolo]"
         
         nombre_AFN=self.getNombreAFN()
+
+        num_estados=str(len(self.getEstados())-1)
 
         str_lenguaje=""
         i=1
@@ -431,8 +450,6 @@ class AFN_e():
             i+=1
 
         str_edo_inicial=self.getEstadoInicial().__str__()
-
-        num_estados=str(len(self.getEstados())-1)
 
         str_estados_aceptacion=""
         i=1
@@ -452,4 +469,4 @@ class AFN_e():
             str_transiciones+="-"
             i+=1
 
-        return nombre_AFN,str_lenguaje,str_edo_inicial,num_estados,str_estados_aceptacion,str_transiciones
+        return nombre_AFN, num_estados, str_lenguaje, str_edo_inicial, str_estados_aceptacion, str_transiciones

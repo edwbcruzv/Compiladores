@@ -14,13 +14,16 @@ class Ventana(QtWidgets.QWidget):
     
 
     def __init__(self,parent=None):
-        self.db=BaseDatos()
-
         super(Ventana,self).__init__(parent)
         self.ui=Ui_Form()
         self.ui.setupUi(self)
-        
 
+        #se crea y carga la base de datos
+        self.db = BaseDatos()
+        #se cargan los combobox a partirde los datos cargados
+        self.__cargarComboBox()
+        
+        #area de los AFN
         self.ui.pushButton_Unir.clicked.connect(self.unir)
         self.ui.pushButton_Concat.clicked.connect(self.concatenar)
         self.ui.pushButton_CerraduraPositiva.clicked.connect(self.cerradura_Positiva)
@@ -28,10 +31,17 @@ class Ventana(QtWidgets.QWidget):
         self.ui.pushButton_Opcional.clicked.connect(self.opcional)
 
         self.ui.pushButton_Crear.clicked.connect(self.crearAutomataAFN)
+
+        #Area de las clases lexicas
         self.ui.pushButton_CrearClaseLexica.clicked.connect(self.crearClaseLexica)
+
+        #Area de los analizadores lexicos
         self.ui.pushButton_CrearAnalizador.clicked.connect(self.crearAnalizadorLexico)
 
+        
         self.ui.pushButton_Mostrar.clicked.connect(self.mostrar)
+        
+
 
 
     def crearAutomataAFN(self):
@@ -42,14 +52,15 @@ class Ventana(QtWidgets.QWidget):
         str_estados_aceptacion=self.ui.textEdit_EstadosAceptacion.toPlainText()
         str_transiciones=self.ui.textEdit_Transiciones.toPlainText()
 
-        print(nombreAFN)
-        print(num_estados)
-        print(str_lenguaje)
-        print("0")
-        print(str_estados_aceptacion)
-        print(str_transiciones)
+        # print(nombreAFN)
+        # print(num_estados)
+        # print(str_lenguaje)
+        # print("0")
+        # print(str_estados_aceptacion)
+        # print(str_transiciones)
 
         #se valida el automata
+                                                
         afn,respuesta=self.db.CrearAutomataAFN(nombreAFN,num_estados,str_lenguaje,"0",str_estados_aceptacion,str_transiciones)
 
         #Se manda un status a la interfaz grafica
@@ -59,9 +70,9 @@ class Ventana(QtWidgets.QWidget):
             return        
         
         #se muestra el automata en consola
-        afn.mostrarAutomata()
+        # afn.mostrarAutomata()
 
-        print("DataBase:",afn.toDataBase())
+        #print("DataBase:",afn.toDataBase())
         #se agrega a los combobox
         self.__agregarAComboBox_Automatas(afn.getNombreAFN())
         #Se almacena el automata creado en la base de datos
@@ -75,19 +86,20 @@ class Ventana(QtWidgets.QWidget):
         #nombre de el automata 
         nombre_afn=self.ui.comboBox_AFN.currentText()
         #se busca el afn para la clase lexica
-        afn=copy.copy(self.db.obtenerAFN(nombre_afn))
+        afn=self.db.obtenerAFN(nombre_afn)
 
         #se validan los datos para la nueva Clase Lexica
-        clase_lexica=self.db.CrearClaseLexica(nombre_clase_lexica,token,afn)    
-
-        
+        clase_lexica,respuesta=self.db.CrearClaseLexica(nombre_clase_lexica,token,afn)    
 
         # status de la creacion de la clase lexica
-        self.ui.label_StatusClaseLexica.setText("hecho")
+        self.ui.label_StatusClaseLexica.setText(respuesta)
+
+        if not(isinstance(clase_lexica,ClaseLexica)):
+            return
         #se muestra el automata en consola
-        afn.mostrarAutomata()
+        clase_lexica.mostrarClaseLexica()
         #se agrega a los combobox de clase lexica
-        self.ui.comboBox_ClasesLexicas.addItem(clase_lexico.getNombreALexico())
+        self.ui.comboBox_ClasesLexicas.addItem(clase_lexica.getNombreClaseLexica())
         #se almacena en la base de datos
         self.db.agregarClaseLexica(clase_lexica)
         
@@ -120,11 +132,18 @@ class Ventana(QtWidgets.QWidget):
         
         A1=self.db.obtenerAFN(nombre_A1)
         A2=self.db.obtenerAFN(nombre_A2)
+
+        if nombre_union =="":
+            self.ui.label_StatusUnir.setText("Ingrese un nombre a la union")
         
         A1.unirCon(A2)
-        # if not(nombre_union ==""):
-        #     A1.Nombre_Automata=nombre_union
+        A1.setNombreAFN(nombre_union)
         A1.mostrarAutomata()
+        self.ui.label_StatusUnir.setText("Hecho")
+        #se agrega a los combobox
+        self.__agregarAComboBox_Automatas(A1.getNombreAFN())
+        #Se almacena el automata creado en la base de datos
+        self.db.agregarAFN(A1)
 
     def concatenar(self):
         nombre_concat=self.ui.lineEdit_ConcatNom.text()
@@ -134,11 +153,18 @@ class Ventana(QtWidgets.QWidget):
         A1=self.db.obtenerAFN(nombre_A1)
         A2=self.db.obtenerAFN(nombre_A2)
 
-        A1.concatCon(A2)
-        # if not(nombre_concat ==""):
-        #     A1.Nombre_Automata=nombre_concat
+        if nombre_concat =="":
+            
+            self.ui.label_StatusConcat.setText("Ingrese un nombre a la concatenacion")
 
+        A1.concatCon(A2)
+        A1.setNombreAFN(nombre_concat)
+        self.ui.label_StatusConcat.setText("Hecho")
         A1.mostrarAutomata()
+        #se agrega a los combobox
+        self.__agregarAComboBox_Automatas(A1.getNombreAFN())
+        #Se almacena el automata creado en la base de datos
+        self.db.agregarAFN(A1)
 
     def cerradura_Kleene(self):
         nombre_A=self.ui.comboBox_ACerradura.currentText()
@@ -147,6 +173,8 @@ class Ventana(QtWidgets.QWidget):
 
         A.cerraduraKleene()
         A.mostrarAutomata()
+        self.ui.label_StatusKleene.setText("Kleene Hecho")
+        self.db.agregarAFN(A)
 
     def cerradura_Positiva(self):
         nombre_A=self.ui.comboBox_ACerradura.currentText()
@@ -155,6 +183,8 @@ class Ventana(QtWidgets.QWidget):
         
         A.cerraduraPositiva()
         A.mostrarAutomata()
+        self.ui.label_StatusPositiva.setText("Positiva Hecho")
+        self.db.agregarAFN(A)
 
     def opcional(self):
         nombre_A=self.ui.comboBox_ACerradura.currentText()
@@ -163,7 +193,20 @@ class Ventana(QtWidgets.QWidget):
 
         A.opcion()
         A.mostrarAutomata()
+        self.ui.label_StatusOpcional.setText("Opcional Hecho")
+        self.db.agregarAFN(A)
 ##*************************************Fin de Pestania de operaciones******
+
+    def __cargarComboBox(self):
+
+        for afn in self.db.Lista_De_AFN:
+            self. __agregarAComboBox_Automatas(afn.getNombreAFN())
+
+        for clase_lexica in self.db.Lista_De_Clases_Lexicas:
+            self.ui.comboBox_ClasesLexicas.addItem(clase_lexica.getNombreClaseLexica())
+
+        for a_lexico in self.db.Lista_De_A_Lexicos:
+            elf.ui.comboBox_Analizadores.addItem(a_lexico.getNombreALexico())
 ##*****************************************Lista de AFNs*********
 
     def __eliminarAutomataLista(self,automata):
@@ -221,34 +264,33 @@ class Ventana(QtWidgets.QWidget):
         
         if self.ui.radioButton_AFNs.isChecked():
             try:
-                self.__mostrarAutomata()
+                self.__mostrarAFNs()
             except:
                 print("No existen datos") 
         
         elif self.ui.radioButton_ClaseLexica.isChecked():
-            try:
-                self.__mostrarALexico()
-            except:
-                print("No existen datos")
+            #try:
+            self.__mostrarClasesLexicas()
+                
+            #except:
+            #    print("No existen datos")
 
         elif self.ui.radioButton_Analizador.isChecked():
             try:
-                
-                self.__mostrarClaseLexica()
+                self.__mostrarALexicos()
             except:
                 print("No existen datos")
 
 
-    def __mostrarAutomata(self):
+    def __mostrarAFNs(self):
         _translate = QtCore.QCoreApplication.translate
-        
+
         # definiendo numero de columnas
         self.ui.tableWidget_Mostrar.setColumnCount(6)
         # definiendo numero de filas (usando numero de automatas en la lista)
-        total_automatas=6#len(self.Lista_De_Automatas)
+        total_automatas = len(self.db.Lista_De_AFN)
+        print("Todal de automatas", total_automatas)
         self.ui.tableWidget_Mostrar.setRowCount(total_automatas)
-
-
 
         #definiendo los numeros de las filas
         for f in range(total_automatas):
@@ -259,170 +301,125 @@ class Ventana(QtWidgets.QWidget):
         for c in range(6):
             item = QtWidgets.QTableWidgetItem()
             self.ui.tableWidget_Mostrar.setHorizontalHeaderItem(c, item)
-        
 
         ##definiendo los cuadros de las tabla (matriz)
         for f in range(total_automatas):
             for c in range(6):
                 item = QtWidgets.QTableWidgetItem()
                 self.ui.tableWidget_Mostrar.setItem(f, c, item)
-        
-        #etiquetas del numero de filas 
+
+        #etiquetas del numero de filas
         for f in range(total_automatas):
             item = self.ui.tableWidget_Mostrar.verticalHeaderItem(f)
             item.setText(_translate("Form", str(f+1)))
 
-        
         #etiquetas de la cabecera
         item = self.ui.tableWidget_Mostrar.horizontalHeaderItem(0)
         item.setText(_translate("Form", "Nombre"))
         item = self.ui.tableWidget_Mostrar.horizontalHeaderItem(1)
-        item.setText(_translate("Form", "Lenguaje"))
-        item = self.ui.tableWidget_Mostrar.horizontalHeaderItem(2)
-        item.setText(_translate("Form", "Estadi Inicial"))
-        item = self.ui.tableWidget_Mostrar.horizontalHeaderItem(3)
         item.setText(_translate("Form", "Estados"))
+        item = self.ui.tableWidget_Mostrar.horizontalHeaderItem(2)
+        item.setText(_translate("Form", "Lenguaje"))
+        item = self.ui.tableWidget_Mostrar.horizontalHeaderItem(3)
+        item.setText(_translate("Form", "Estado Inicial"))
         item = self.ui.tableWidget_Mostrar.horizontalHeaderItem(4)
-        item.setText(_translate("Form", "Estados Finales"))
+        item.setText(_translate("Form", "Estados De Aceptacion"))
         item = self.ui.tableWidget_Mostrar.horizontalHeaderItem(5)
         item.setText(_translate("Form", "Transiciones"))
-        
+
         ##nombre e items
         __sortingEnabled = self.ui.tableWidget_Mostrar.isSortingEnabled()
         self.ui.tableWidget_Mostrar.setSortingEnabled(False)
 
-        item = self.ui.tableWidget_Mostrar.item(0, 0)
-        item.setText(_translate("Form", "texto1x1dnfbdfbdshfbdsbfhdbfhdsbfbdfbdsfbjdfgbfbvhjbf"))
-        item = self.ui.tableWidget_Mostrar.item(0, 1)
-        item.setText(_translate("Form", "texto1x2"))
-        item = self.ui.tableWidget_Mostrar.item(0, 2)
-        item.setText(_translate("Form", "texto1x3"))
-        item = self.ui.tableWidget_Mostrar.item(0, 3)
-        item.setText(_translate("Form", "texto1x4"))
-        item = self.ui.tableWidget_Mostrar.item(0, 4)
-        item.setText(_translate("Form", "texto1x5"))
-        item = self.ui.tableWidget_Mostrar.item(0, 5)
-        item.setText(_translate("Form", "texto1x6"))
-        item = self.ui.tableWidget_Mostrar.item(1, 0)
-        item.setText(_translate("Form", "texto2x1"))
-        item = self.ui.tableWidget_Mostrar.item(1, 1)
-        item.setText(_translate("Form", "texto2x2"))
-        item = self.ui.tableWidget_Mostrar.item(1, 2)
-        item.setText(_translate("Form", "texto2x3"))
-        item = self.ui.tableWidget_Mostrar.item(1, 3)
-        item.setText(_translate("Form", "texto2x4"))
-        item = self.ui.tableWidget_Mostrar.item(1, 4)
-        item.setText(_translate("Form", "texto2x5"))
-        item = self.ui.tableWidget_Mostrar.item(1, 5)
-        item.setText(_translate("Form", "texto2x6"))
+        f = 0
+        for elem in self.db.Lista_De_AFN:
+            #nombre_AFN, num_estados, str_lenguaje, str_edo_inicial, str_estados_aceptacion, str_transiciones
+            list_aux = list(elem.__str__())
+            #print(list_aux)
+            c = 0
+            for dato in list_aux:
+                item = self.ui.tableWidget_Mostrar.item(f, c)
+                item.setText(_translate("Form", dato))
+                c += 1
+
+            f += 1
+
         self.ui.tableWidget_Mostrar.setSortingEnabled(__sortingEnabled)
 
 
-    def __mostrarClaseLexica(self):
-        pass
-
-    def __mostrarALexico(self):
-        pass
-
-    def Respaldo(self):
-        _translate = QtCore.QCoreApplication.translate
+    def __mostrarClasesLexicas(self):
         
-        # definiendo numero de columnas
-        self.ui.tableWidget_Mostrar.setColumnCount(6)
-        # definiendo numero de filas (usando numero de automatas en la lista)
 
-        self.ui.tableWidget_Mostrar.setRowCount(2)
+        _translate = QtCore.QCoreApplication.translate
+
+        # definiendo numero de columnas
+        self.ui.tableWidget_Mostrar.setColumnCount(8)
+        # definiendo numero de filas (usando numero de clases lexicas en la lista)
+        total_clases_lexicas = len(self.db.Lista_De_Clases_Lexicas)
+        print("Todal de Clase lexicas", total_clases_lexicas)
+        self.ui.tableWidget_Mostrar.setRowCount(total_clases_lexicas)
 
         #definiendo los numeros de las filas
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_Mostrar.setVerticalHeaderItem(0, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_Mostrar.setVerticalHeaderItem(1, item)
-        #definiendo las caberera
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_Mostrar.setHorizontalHeaderItem(0, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_Mostrar.setHorizontalHeaderItem(1, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_Mostrar.setHorizontalHeaderItem(2, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_Mostrar.setHorizontalHeaderItem(3, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_Mostrar.setHorizontalHeaderItem(4, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_Mostrar.setHorizontalHeaderItem(5, item)
+        for f in range(total_clases_lexicas):
+            item = QtWidgets.QTableWidgetItem()
+            self.ui.tableWidget_Mostrar.setVerticalHeaderItem(f, item)
 
-        ##definiendo los cuadros de las tabla
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_Mostrar.setItem(0, 0, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_Mostrar.setItem(0, 1, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_Mostrar.setItem(0, 2, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_Mostrar.setItem(0, 3, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_Mostrar.setItem(0, 4, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_Mostrar.setItem(0, 5, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_Mostrar.setItem(1, 0, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_Mostrar.setItem(1, 1, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_Mostrar.setItem(1, 2, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_Mostrar.setItem(1, 3, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_Mostrar.setItem(1, 4, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_Mostrar.setItem(1, 5, item)
-        #etiquetas del numero de filas 
-        item = self.ui.tableWidget_Mostrar.verticalHeaderItem(0)
-        item.setText(_translate("Form", "1"))
-        item = self.ui.tableWidget_Mostrar.verticalHeaderItem(1)
-        item.setText(_translate("Form", "2"))
+        #definiendo las columnas y la cabecera
+        for c in range(8):
+            item = QtWidgets.QTableWidgetItem()
+            self.ui.tableWidget_Mostrar.setHorizontalHeaderItem(c, item)
+
+        ##definiendo los cuadros de las tabla (matriz)
+        for f in range(total_clases_lexicas):
+            for c in range(8):
+                item = QtWidgets.QTableWidgetItem()
+                self.ui.tableWidget_Mostrar.setItem(f, c, item)
+        
+        #etiquetas del numero de filas
+        for f in range(total_clases_lexicas):
+            item = self.ui.tableWidget_Mostrar.verticalHeaderItem(f)
+            item.setText(_translate("Form", str(f+1)))
+
         #etiquetas de la cabecera
         item = self.ui.tableWidget_Mostrar.horizontalHeaderItem(0)
-        item.setText(_translate("Form", "Nombre"))
+        item.setText(_translate("Form", "Nombre Clase Lexica"))
         item = self.ui.tableWidget_Mostrar.horizontalHeaderItem(1)
-        item.setText(_translate("Form", "Lenguaje"))
+        item.setText(_translate("Form", "Token"))
         item = self.ui.tableWidget_Mostrar.horizontalHeaderItem(2)
-        item.setText(_translate("Form", "Estadi Inicial"))
+        item.setText(_translate("Form", "Nombre AFN"))
         item = self.ui.tableWidget_Mostrar.horizontalHeaderItem(3)
         item.setText(_translate("Form", "Estados"))
         item = self.ui.tableWidget_Mostrar.horizontalHeaderItem(4)
-        item.setText(_translate("Form", "Estados Finales"))
+        item.setText(_translate("Form", "Lenguaje"))
         item = self.ui.tableWidget_Mostrar.horizontalHeaderItem(5)
+        item.setText(_translate("Form", "Estado Inicial"))
+        item = self.ui.tableWidget_Mostrar.horizontalHeaderItem(6)
+        item.setText(_translate("Form", "Estados De Aceptacion"))
+        item = self.ui.tableWidget_Mostrar.horizontalHeaderItem(7)
         item.setText(_translate("Form", "Transiciones"))
+
         ##nombre e items
         __sortingEnabled = self.ui.tableWidget_Mostrar.isSortingEnabled()
         self.ui.tableWidget_Mostrar.setSortingEnabled(False)
-        item = self.ui.tableWidget_Mostrar.item(0, 0)
-        item.setText(_translate("Form", "texto1x1dnfbdfbdshfbdsbfhdbfhdsbfbdfbdsfbjdfgbfbvhjbf"))
-        item = self.ui.tableWidget_Mostrar.item(0, 1)
-        item.setText(_translate("Form", "texto1x2"))
-        item = self.ui.tableWidget_Mostrar.item(0, 2)
-        item.setText(_translate("Form", "texto1x3"))
-        item = self.ui.tableWidget_Mostrar.item(0, 3)
-        item.setText(_translate("Form", "texto1x4"))
-        item = self.ui.tableWidget_Mostrar.item(0, 4)
-        item.setText(_translate("Form", "texto1x5"))
-        item = self.ui.tableWidget_Mostrar.item(0, 5)
-        item.setText(_translate("Form", "texto1x6"))
-        item = self.ui.tableWidget_Mostrar.item(1, 0)
-        item.setText(_translate("Form", "texto2x1"))
-        item = self.ui.tableWidget_Mostrar.item(1, 1)
-        item.setText(_translate("Form", "texto2x2"))
-        item = self.ui.tableWidget_Mostrar.item(1, 2)
-        item.setText(_translate("Form", "texto2x3"))
-        item = self.ui.tableWidget_Mostrar.item(1, 3)
-        item.setText(_translate("Form", "texto2x4"))
-        item = self.ui.tableWidget_Mostrar.item(1, 4)
-        item.setText(_translate("Form", "texto2x5"))
-        item = self.ui.tableWidget_Mostrar.item(1, 5)
-        item.setText(_translate("Form", "texto2x6"))
+
+        f = 0
+        for elem in self.db.Lista_De_Clases_Lexicas:
+            #nombre_AFN, num_estados, str_lenguaje, str_edo_inicial, str_estados_aceptacion, str_transiciones
+            list_aux = list(elem.__str__())
+            #print(list_aux)
+            c = 0
+            for dato in list_aux:
+                item = self.ui.tableWidget_Mostrar.item(f, c)
+                item.setText(_translate("Form", dato))
+                c += 1
+
+            f += 1
+
         self.ui.tableWidget_Mostrar.setSortingEnabled(__sortingEnabled)
+
+    def __mostrarALexicos(self):
+        pass
+
 
 
 ##*****INICIO DE TODO EL PROGRAMA
