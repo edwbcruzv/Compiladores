@@ -58,11 +58,13 @@ class ClaseLexica():
         return self.getNombreClaseLexica() == clase_lexica.getNombreClaseLexica()
 ##************************************************************
     def toDataBase(self):
-        nombre,token=self.__str__()
+        nombre=self.getNombreClaseLexica()
+        token=self.getToken()
         return "||||%s__%s__%s" %(nombre,token,self.getAFN().toDataBase())
 
     def mostrarClaseLexica(self):
-        nombre,token=self.__str__()
+        nombre=self.getNombreClaseLexica()
+        token=self.getToken()
         print("Nombre Clase Lexica:",nombre)
 
         print("Token:",token)

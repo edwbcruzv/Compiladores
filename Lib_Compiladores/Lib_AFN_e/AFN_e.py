@@ -115,10 +115,12 @@ class AFN_e():
         
         #se une el estado inicial de este automata con el automata2
         edo_init=self.getEstadoInicial()
-        self.__ListTransicionesObjs([[edo_init.getNombre(),nuevo_edo_inicial.getNombre(),"E"]])
+        edo_init_2=automata2.getEstadoInicial()
+        self.__ListTransicionesObjs([[edo_init.getNombre(),edo_init_2.getNombre(),"E"]])
 
         #se agrega el estado de aceptacion del automata2 a la lista de este automata
         self.getEstadosAceptacion().extend(automata2.getEstadosAceptacion())
+        
 
     #Nos permite unir el automata actual con otro automata que se reciba como parametro
     def unirCon(self,AFN):

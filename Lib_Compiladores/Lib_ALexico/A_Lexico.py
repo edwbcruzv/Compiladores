@@ -1,30 +1,37 @@
 from Lib_Compiladores.Lib_ClaseLexica import ClaseLexica
-
+from Lib_Compiladores.Lib_AFN_e import AFN_e
 
 class A_Lexico():
 
         # Nombre_A_Lexico:"NombreALexico"
-        # Clase_Lexica: [ClaseLexica1(),ClaseLexica2(),.....]
-    def __init__(self,Nombre_A_Lexico,Clase_Lexica=None):
+        # AFD: en el caso de tener un AFD
+    def __init__(self,Nombre_A_Lexico,AFD=None):
         # __Nombre_A_Lexico:"nombreALexico"
         self.__Nombre_A_Lexico=Nombre_A_Lexico
         # __Clase_Lexica:ClaseLexica().objet
-        self.__Lista_Clases_Lexicas=[]
+        self.__Union_AFNs=None
         # __AFD: AFN_e().objet      tendra las propiedades de un AFD
-        self.__AFD=object()
+        self.__AFD=None
 
-        #solo se define un nombre para terminos de busqueda o definir
-        if Clase_Lexica==None:
+        # en el caso existir el AFD se construye 
+        if not(AFD==None):
+            #se declara el analizador lexico terminado
+            self.__AFD=AFD
             return
-        # se verifica que sea una instancia de ClaseLExica
-        if not(isinstance(Clase_Lexica,ClaseLexica)):
-            return
-            
-        self.__Clase_Lexica=Clase_Lexica
-        #se llama a la funcion que se encarga de convertir el AFN a AFD
+        #de lo contrario solo se crea la instancia y despues se agregan las clases lexicas
 
-        #self.__AFNtoAFD()
-    
+    def addClaseLexica(self,clase_lexica=ClaseLexica):
+        if self.__Union_AFNs==None:
+            self.__Union_AFNs=clase_lexica.getAFN()
+            return
+        
+        afn_temp=clase_lexica.getAFN()
+        self.__Union_AFNs.unionEspecial(clase_lexica.getAFN())
+
+
+    def getUnionClasesLexicas(self):
+        return self.__Union_AFNs
+
     def getNombreALexico(self):
         return self.__Nombre_A_Lexico
 
@@ -34,8 +41,21 @@ class A_Lexico():
 
 ##------INICIO DEL ALGORITMO DE ANALISIS DE UNA CADENA USANDO UN AFD----------
     def analizarCadena(self,cadena):
+        # a partir de aqui se crea el AFD con el que se trabajara
+    
+        if not(isinstance(self.__AFD,AFN_e)):
+            # Al no existir un AFD no se puede analizar ninguna cadena
+            return
+        else: 
+            if self.__Union_AFNs==None:
+                # Al no existir alguna union de clases lexicas no se puede analizar ninguna cadena
+                return
+            else:
+                # Como existe la union entonces se crea el AFD
+                self.__AFNtoAFD()
+                # y se bloquea la union de clases lexicas
+        pass
         list_cadena=list(cadena)
-
         Lista_Lexemas=[]
         Lexema_temp=[]
 

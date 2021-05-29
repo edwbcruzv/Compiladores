@@ -22,6 +22,8 @@ class Ventana(QtWidgets.QWidget):
         self.db = BaseDatos()
         #se cargan los combobox a partirde los datos cargados
         self.__cargarComboBox()
+        #se carga la tabla de clases lexicas en la pestaña de analisis lexico
+        self.__mostrarListaClasesLexicas()
         
         #area de los AFN
         self.ui.pushButton_Unir.clicked.connect(self.unir)
@@ -105,24 +107,93 @@ class Ventana(QtWidgets.QWidget):
         
 
     def crearAnalizadorLexico(self):
+
         #nombre del nuevo analizador lexico
         nombre_a_lexico=self.ui.lineEdit_AnalizadorNom.text()
-        #nombre de la clase lexica para el analizador lexico
-        nombre_clase_lexica=self.ui.comboBox_AFN.currentText()
-        #se busca la clase lexica
-        clase_lexica=self.db.obtenerClaseLexica(self,nombre_clase_lexica)
         
-        a_lexico=self.db.CrearA_Lexico()
+        a_lexico,respuesta=self.db.CrearA_Lexico(nombre_a_lexico)
+
+        tabla=self.ui.tableWidget_ClasesLexicas
+        for i in range(len(self.db.Lista_De_Clases_Lexicas)):
+            #0 si tabla.item(i,0).checkState() esta desmarcado
+            #2 si tabla.item(i,0).checkState() esta marcado
+            if tabla.item(i,0).checkState() == 2:
+                print(tabla.item(i,0).text()," agregado") 
+                #se busca la clase lexica
+                clase_lexica=self.db.obtenerClaseLexica(tabla.item(i,0).text())
+
+        if a_lexico==None:
+            self.ui.label_StatusALexico.setText("No se creo el analizador lexico")
+            return
 
         #se manda un status de creacion
-        self.ui.label_StatusALexico.setText("hecho")
+        self.ui.label_StatusALexico.setText(respuesta)
         #se muestra el automata en consola
-        afn.mostrarAutomata()
-        #se agrega a el combobox del analizadores
+        
+        #se agrega a el combobox del  lexicos
         self.ui.comboBox_Analizadores.addItem(a_lexico.getNombreALexico())
         #se almacena en la base de datos
-        self.db.agregarALexico(a_lexico)
-    
+        #self.db.agregarALexico(a_lexico)
+
+    def __mostrarListaClasesLexicas(self):
+        _translate = QtCore.QCoreApplication.translate
+        
+        #------------INICIO DE LA TABLA DE CLASES LEXICAS---------------
+        total_clases_lexicas=len(self.db.Lista_De_Clases_Lexicas)
+        # Definiendo la cabecera
+        self.ui.tableWidget_ClasesLexicas.setColumnCount(2)
+        item = QtWidgets.QTableWidgetItem() 
+        self.ui.tableWidget_ClasesLexicas.setHorizontalHeaderItem(0, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.ui.tableWidget_ClasesLexicas.setHorizontalHeaderItem(1, item)
+
+        #definiendo las filas
+        self.ui.tableWidget_ClasesLexicas.setRowCount(total_clases_lexicas)
+        item = QtWidgets.QTableWidgetItem()
+        self.ui.tableWidget_ClasesLexicas.setVerticalHeaderItem(0, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.ui.tableWidget_ClasesLexicas.setVerticalHeaderItem(1, item)
+
+        
+        # Definiendo la matriz
+        for f in range(total_clases_lexicas):
+            # Definiendo la columna con los checked
+            item = QtWidgets.QTableWidgetItem()
+            item.setCheckState(QtCore.Qt.Unchecked)
+            self.ui.tableWidget_ClasesLexicas.setItem(f, 0, item)
+
+            # Definiendo la columna faltante
+            item = QtWidgets.QTableWidgetItem()
+            self.ui.tableWidget_ClasesLexicas.setItem(f, 1, item)
+        
+
+        item = self.ui.tableWidget_ClasesLexicas.verticalHeaderItem(0)
+        item.setText(_translate("Form", "1"))
+        item = self.ui.tableWidget_ClasesLexicas.verticalHeaderItem(1)
+        item.setText(_translate("Form", "2"))
+        item = self.ui.tableWidget_ClasesLexicas.horizontalHeaderItem(0)
+        item.setText(_translate("Form", "Clase Lexica"))
+        item = self.ui.tableWidget_ClasesLexicas.horizontalHeaderItem(1)
+        item.setText(_translate("Form", "Token"))
+
+        __sortingEnabled = self.ui.tableWidget_ClasesLexicas.isSortingEnabled()
+        self.ui.tableWidget_ClasesLexicas.setSortingEnabled(False)
+        
+        f = 0
+        for elem in self.db.Lista_De_Clases_Lexicas:
+            #nombre_AFN, num_estados, str_lenguaje, str_edo_inicial, str_estados_aceptacion, str_transiciones
+            list_aux = [elem.getNombreClaseLexica(),str(elem.getToken())]
+            #print(list_aux)
+            c = 0
+            for dato in list_aux:
+                item = self.ui.tableWidget_ClasesLexicas.item(f, c)
+                item.setText(_translate("Form", dato))
+                c += 1
+
+            f += 1
+
+        self.ui.tableWidget_ClasesLexicas.setSortingEnabled(__sortingEnabled)
+        #------------FIN DE LA TABLA DE CLASES LEXICAS---------------
 
 ##*****************************************Pestania de operaciones******
     def unir(self):
@@ -206,7 +277,7 @@ class Ventana(QtWidgets.QWidget):
             self.ui.comboBox_ClasesLexicas.addItem(clase_lexica.getNombreClaseLexica())
 
         for a_lexico in self.db.Lista_De_A_Lexicos:
-            elf.ui.comboBox_Analizadores.addItem(a_lexico.getNombreALexico())
+            self.ui.comboBox_Analizadores.addItem(a_lexico.getNombreALexico())
 ##*****************************************Lista de AFNs*********
 
     def __eliminarAutomataLista(self,automata):
