@@ -5,11 +5,11 @@ class Estado:
     def __init__(self,elem,Token=0):
         
         if list==type(elem):
-            self.Nombre=elem[0]
-            self.Token=elem[1]
+            self.Nombre=str(elem[0])
+            self.Token=int(elem[1])
         elif str==type(elem):
-            self.Nombre=elem
-            self.Token=Token
+            self.Nombre=str(elem)
+            self.Token=int(Token)
         
 
     def setNombre(self,Nombre):

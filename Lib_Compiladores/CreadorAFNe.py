@@ -60,22 +60,20 @@ class CreadorAFNe:
 
         
 
-        #si las funciones regresan una lista vacia se significa que hay un error en esa parte 
-        K_list=self.__ValidaEstados(num_estados)
-        Sigma_list=self.__ValidaLenguaje(str_lenguaje) 
-        Z_list=self.__ValidaEstadosAceptacion(str_estados_aceptacion) 
-        M_list=self.__ValidaTransiciones(str_transiciones)
-        
-        
+        #si las funciones regresan una lista vacia se significa que hay un error en esa parte   
+        K_list = self.__ValidaEstados(num_estados)
         if K_list==None:
             return None,"Error en el numero de estados"
-
-        if Z_list==None:
-            return None,"Error en Los estados de aceptacion "
-
+    
+        Sigma_list = self.__ValidaLenguaje(str_lenguaje)
         if Sigma_list==None:
-            return None,"Error en el lenguaje"
+            return None,"Error al definir el lenguaje"
 
+        Z_list = self.__ValidaEstadosAceptacion(str_estados_aceptacion)
+        if Z_list == None:
+            return None, "Error en Los estados de aceptacion "
+
+        M_list = self.__ValidaTransiciones(str_transiciones)
         if M_list==None:
             return None,"Error en las transiciones"
         
@@ -107,6 +105,9 @@ class CreadorAFNe:
         # str_aux3="".join(str_aux2.split(']'))
         # str_aux4="".join(str_aux3.split('-'))
         #print(str_aux1)
+        for s in str_aux1:
+            if not(len(s)==1):
+                return None
         return str_aux1 #:["a","b","c",.....]
 
     # str_estados_aceptacion: "edo1-edo2-edo3" o "[edo1,token]-[edo2,token]-[edo3,token]"
@@ -136,9 +137,25 @@ class CreadorAFNe:
         
     # str_transiciones:"[edo,edo,simbolo]-[edo,edo,simbolo]-[edo,edo,simbolo]"
     def __ValidaTransiciones(self,str_transiciones):#terminados
+
+        #en el caso de que se use el signo - y evitar confusiones
+        bandera=False
+        if "-]" in str_transiciones:
+            #print("true",str_transiciones)
+            str_transiciones = str_transiciones.replace("-]", "/+]")
+            #print("true", str_transiciones)
+            bandera=True
+
+        
         str_aux1="".join(str_transiciones.split('-'))
         str_aux2="".join(str_aux1.split('['))
         str_aux3=str_aux2.split(']')
+
+        #en el caso de que se use el signo - y evitar confusiones
+        if bandera==True:
+            #print(str_aux3)
+            for i in range(len(str_aux3)):
+                str_aux3[i] = str_aux3[i].replace("/+", "-")
         
         lista_retorno=[]
         for l in str_aux3:

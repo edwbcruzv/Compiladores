@@ -24,6 +24,11 @@ class ClaseLexica():
             return
         self.__AFN=copy.deepcopy(AFN)
         self.__Token=Token
+
+        #en caso de que el AFN ya tenga un token asignado se termina la contruccion
+        if self.__AFN.getEstadosAceptacion()[0].getToken()>0:
+            return
+
         #el toquen no puede ser <= 0
         if self.__Token>0:
             self.__definirToken(Token)

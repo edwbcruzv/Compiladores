@@ -37,7 +37,7 @@ class BaseDatos(CreadorAFNe,CreadorClaseLexica,CreadorALexico):
 
             #CrearAutomataAFN(nombreAFN,num_estados,str_lenguaje,str_edo_inicial,str_estados_aceptacion,str_transiciones)
             afn,respuesta=self.CrearAutomataAFN(list_aux[0], list_aux[1], list_aux[2], list_aux[3], list_aux[4], list_aux[5])
-            print(respuesta)
+            #print(respuesta)
             if not(isinstance(afn,AFN_e)):
                 print(respuesta)
                 return
@@ -56,22 +56,41 @@ class BaseDatos(CreadorAFNe,CreadorClaseLexica,CreadorALexico):
             clase_lexica = list_aux[0].split("__")
             # informacion del AFN asociado
             afn = list_aux[1].split("__")  
-            # print("Clase Lexica:",clase_lexica)
-            # print("AFN:",afn)
+            #print("Clase Lexica:",clase_lexica)
+            #print("AFN:",afn)
 
             AFN, respuesta = self.CrearAutomataAFN(afn[0], afn[1], afn[2], afn[3], afn[4], afn[5])
-            print(respuesta)
+            #print(respuesta)
             Clase_Lexica,respuesta = self.CrearClaseLexica(clase_lexica[0], clase_lexica[1], AFN)
-            print(respuesta)
+            #print(respuesta)
+            if not(isinstance(AFN, AFN_e)) and not(isinstance(Clase_Lexica, ClaseLexica)):
+                print(respuesta)
+                return
 
             self.Lista_De_Clases_Lexicas.append(Clase_Lexica)
 
     def cargarALexicos(self):
         archivos=os.listdir(self.__CarpetaALexicos)
 
-        for archivo in archivos:
-            archivo
-            #self.Lista_De_A_Lexicos.append()
+        for nombre_archivo in archivos:
+            archivo = open(self.__CarpetaALexicos+nombre_archivo, "r")
+            cadena = archivo.read()
+            #print(cadena)
+            str_aux1 = "".join(cadena.split("|||||"))
+            list_aux = str_aux1.split("|||")
+            # informacion del analizador lexico
+            nombre_a_lexico = list_aux[0]
+            # informacion del AFN(AFD) asociado
+            afn = list_aux[1].split("__")
+            #print("Analizador Lexico:",nombre_a_lexico)
+            #print("AFN:", afn)
+            AFN, respuesta = self.CrearAutomataAFN(
+                afn[0], afn[1], afn[2], afn[3], afn[4], afn[5])
+            #print(respuesta)
+
+            a_lexico, respuesta=self.CrearA_Lexico(nombre_a_lexico,AFN)
+            #print(respuesta)
+            self.Lista_De_A_Lexicos.append(a_lexico)
 #***************************************************************************
 
 #*****************Manejo de las listas*******************
@@ -132,13 +151,14 @@ class BaseDatos(CreadorAFNe,CreadorClaseLexica,CreadorALexico):
 
         self.Lista_De_Clases_Lexicas.remove(object)
     #-----------------------------A_Lexico
-    def agregarALexico(self,A_Lexico_e_obj):
+    def agregarALexico(self,A_Lexico_obj):
         # se agrega a la carpeta
-        nombre_archivo=A_Lexico_e_obj.getNombreALexico()
+        nombre_archivo=A_Lexico_obj.getNombreALexico()
         archivo=open(self.__CarpetaALexicos+nombre_archivo+".alx","w")
-        # archivo.write(A_Lexico_e_obj.toDataBase())
-        # archivo.close()
-        self.Lista_De_A_Lexicos.append(A_Lexico_e_obj)
+        archivo.write(A_Lexico_obj.toDataBase())
+        #print(A_Lexico_obj.toDataBase())
+        archivo.close()
+        self.Lista_De_A_Lexicos.append(A_Lexico_obj)
         self.Lista_De_A_Lexicos.sort()
 
     def quitarALexico(self,nombre_archivo):

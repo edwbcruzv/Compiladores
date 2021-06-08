@@ -84,6 +84,7 @@ class AFN_e():
         return self.getEstados()[len_edos-1]
 
     def agregarEstadoFinal(self):
+        
         nuevo_edo_final=self.nuevoEdo()
 
         #si el AFN tiene mas de un estado final
@@ -109,8 +110,10 @@ class AFN_e():
         self.getEstados().extend(automata2.getEstados())
         #ahora las transiciones de automata2 de uniran con este automata
         self.getTransiciones().extend(automata2.getTransiciones())
-        #ahora se unen los afabetos
-        self.getAlfabeto().extend(automata2.getAlfabeto())
+        #ahora se unen los afabetos evitando que se repitan
+        for i in automata2.getAlfabeto():
+            if i not in self.getAlfabeto():
+                self.getAlfabeto().append(i)
 
         
         #se une el estado inicial de este automata con el automata2
@@ -140,9 +143,10 @@ class AFN_e():
         self.getEstados().extend(automata2.getEstados())
         #ahora las transiciones de automata2 de uniran con este automata
         self.getTransiciones().extend(automata2.getTransiciones())
-        #ahora se unen los afabetos
-        self.getAlfabeto().extend(automata2.getAlfabeto())
-        
+        #ahora se unen los afabetos evitando que se repitan
+        for i in automata2.getAlfabeto():
+            if i not in self.getAlfabeto():
+                self.getAlfabeto().append(i)
 
         #se crea el nuevo estado final
         nuevo_edo_final=self.nuevoEdo()
@@ -190,8 +194,10 @@ class AFN_e():
         self.getEstados().extend(automata2.getEstados())
         #ahora las transiciones de automata2 de uniran con este automata
         self.getTransiciones().extend(automata2.getTransiciones())
-        #ahora se unen los afabetos
-        self.getAlfabeto().extend(automata2.getAlfabeto())
+        #ahora se unen los afabetos evitando que se repitan
+        for i in automata2.getAlfabeto():
+            if i not in self.getAlfabeto():
+                self.getAlfabeto().append(i)
 
         #si este automata tiene mas estados finales
         #todos estos se uniran al estado inicial de
@@ -334,7 +340,12 @@ class AFN_e():
         self.getEstados().sort()
     # Sigma_list:["a","b","c",.....]
     def __ListAlfabeto(self,Sigma_list):
-        self.setAlfabeto(Sigma_list)
+        #ahora se unen los afabetos evitando que se repitan
+        lista_aux=[]
+        for i in Sigma_list:
+            if i not in lista_aux:
+                lista_aux.append(i)
+        self.setAlfabeto(lista_aux)
         self.getAlfabeto().sort()
 
     # S:"nombre estado"
@@ -354,15 +365,18 @@ class AFN_e():
     #        sublista:["estado",Token]    token es un int
     def __ListEstadosAceptObjs(self,Z_list):
         #elem puede ser un dtr o una lista
+        
         for elem in Z_list:
-            edo=Estado(elem) #en caso de haber token aqui se almacena
+            edo_temp=Estado(elem) #en caso de haber token aqui se almacena
             #se busca el estado en la lista de estado para ver si existe
             #y se agregara a la transicion, pero tomando el estado de la lista
+            
             for e in self.getEstados():
-                if e==edo:    
+                if e==edo_temp:    
                     self.getEstadosAceptacion().append(e)
+                    e.setToken(edo_temp.getToken())
             #En caso de no existir un estado que viene en las transiciones no se agregara
-
+            
         self.getEstadosAceptacion().sort()
 
     # M_list: [[sublista1],[sublista2],[sublista3],....]
@@ -456,6 +470,7 @@ class AFN_e():
         str_estados_aceptacion=""
         i=1
         for e in self.getEstadosAceptacion():
+            
             str_estados_aceptacion+=e.__str__()
             if i==len(self.getEstadosAceptacion()):
                 break

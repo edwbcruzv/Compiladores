@@ -1,60 +1,66 @@
-from Lib_Compiladores.Lib_ClaseLexica import ClaseLexica
-from Lib_Compiladores.Lib_AFN_e import AFN_e
-
+from Lib_Compiladores.Lib_ClaseLexica.ClaseLexica import ClaseLexica
+from Lib_Compiladores.Lib_AFN_e.AFN_e import AFN_e
+import copy
 class A_Lexico():
 
         # Nombre_A_Lexico:"NombreALexico"
         # AFD: en el caso de tener un AFD
     def __init__(self,Nombre_A_Lexico,AFD=None):
+        #lista de subconjuntos dela convercion a AFD
+        self.Conjunto_Epsilon_List=[]
         # __Nombre_A_Lexico:"nombreALexico"
         self.__Nombre_A_Lexico=Nombre_A_Lexico
         # __Clase_Lexica:ClaseLexica().objet
-        self.__Union_AFNs=None
+        self.Union_AFNs=None
         # __AFD: AFN_e().objet      tendra las propiedades de un AFD
         self.__AFD=None
 
         # en el caso existir el AFD se construye 
-        if not(AFD==None):
+        if isinstance(AFD,AFN_e):
             #se declara el analizador lexico terminado
             self.__AFD=AFD
             return
         #de lo contrario solo se crea la instancia y despues se agregan las clases lexicas
-
-    def addClaseLexica(self,clase_lexica=ClaseLexica):
-        if self.__Union_AFNs==None:
-            self.__Union_AFNs=clase_lexica.getAFN()
+    # se uniran los estados iniciales
+    def addClaseLexica(self,clase_lexica):
+        
+        if type(self.Union_AFNs)==type(None):
+            self.Union_AFNs = copy.deepcopy(clase_lexica.getAFN())
+            #print("esto debe imprimirse una vez")
             return
         
-        afn_temp=clase_lexica.getAFN()
-        self.__Union_AFNs.unionEspecial(clase_lexica.getAFN())
+        afn_temp = copy.deepcopy(clase_lexica.getAFN())
+        self.Union_AFNs.unionEspecial(clase_lexica.getAFN())
 
+    def getAFD(self):
+        return self.__AFD
 
     def getUnionClasesLexicas(self):
-        return self.__Union_AFNs
+        return self.Union_AFNs
 
     def getNombreALexico(self):
-        return self.__Nombre_A_Lexico
+        return self.__Nombre_A_Lexico 
 
-    ##solo se uniran los estados iniciales
-    def unionClasesLexicas(self,clase_lexica):
-        pass   
-
-##------INICIO DEL ALGORITMO DE ANALISIS DE UNA CADENA USANDO UN AFD----------
-    def analizarCadena(self,cadena):
+    def definirALexico(self):
         # a partir de aqui se crea el AFD con el que se trabajara
-    
-        if not(isinstance(self.__AFD,AFN_e)):
-            # Al no existir un AFD no se puede analizar ninguna cadena
-            return
-        else: 
-            if self.__Union_AFNs==None:
+        
+        if type(self.__AFD)==type(None):
+            # Al no existir un AFD se debe de crear uno
+        
+            if type(self.Union_AFNs) == type(None):
                 # Al no existir alguna union de clases lexicas no se puede analizar ninguna cadena
                 return
             else:
                 # Como existe la union entonces se crea el AFD
+                
                 self.__AFNtoAFD()
                 # y se bloquea la union de clases lexicas
-        pass
+        else:
+            #ya existe el AFD
+            return
+##------INICIO DEL ALGORITMO DE ANALISIS DE UNA CADENA USANDO UN AFD----------
+    def analizarCadena(self,cadena):
+        
         list_cadena=list(cadena)
         Lista_Lexemas=[]
         Lexema_temp=[]
@@ -119,17 +125,23 @@ class A_Lexico():
         return [],False
 
     def __lt__(self,a_lexico):
-        return self.Nombre_A_Lexico<a_lexico.Nombre_A_Lexico
+        return self.getNombreALexico() < a_lexico.getNombreALexico()
 
     def __le__(self,a_lexico):
-        return self.Nombre_A_Lexico<=a_lexico.Nombre_A_Lexico
+        return self.getNombreALexico() <= a_lexico.getNombreALexico()
 
     def __eq__(self,a_lexico):
-        return self.Nombre_A_Lexico==a_lexico.Nombre_A_Lexico
+        return self.getNombreALexico() == a_lexico.getNombreALexico()
 
     def tablaAFD(self):
         pass
 
+    def toDataBase(self):
+        return "|||||%s%s" % (self.getNombreALexico(), self.getAFD().toDataBase())
+
+    def __str__(self):
+        nombre_AFN, num_estados, str_lenguaje, str_edo_inicial, str_estados_aceptacion, str_transiciones = self.getAFD().__str__()
+        return self.getNombreALexico(), nombre_AFN, num_estados, str_lenguaje, str_edo_inicial, str_estados_aceptacion, str_transiciones
 
 
 #---------INICIO DEL ALGORITMO Y FUNCIONES DE LA CONVERSION A AFD---------
@@ -140,7 +152,7 @@ class A_Lexico():
         self.Conjunto_Epsilon_List=[]
 
         #inicio de la conversion a AFD
-        self.AFD=self.__analisisDe()
+        self.__analisisDe()
 
     #conjunto de estados destino al tener un "E" RECURSIVO
     #los estados se agregan a la variable conjunto recibido
@@ -151,7 +163,7 @@ class A_Lexico():
         # el simbolo sea "E"
         # despues se toma el estado destino y se agrega al conjunto
         estado=conjunto[len(conjunto)-1]
-        for T in self.transiciones:
+        for T in self.Union_AFNs.getTransiciones():
             edo_prin=T.getEstadoPrincipal() #Estado Principal
             edo_dest=T.getEstadoDestino() #Estado Destino
             sim=T.getSimbolo() #Simbolo
@@ -171,6 +183,7 @@ class A_Lexico():
         #por defecto el mismo estado se incluye en el conjunto
         conjunto.append(estado)
         self.__cerraduraEpsilon(conjunto)
+        #se debe de ordenar para una comparacion futura correcta
         conjunto.sort()
         return conjunto
 
@@ -185,7 +198,7 @@ class A_Lexico():
         # el estado principal sea la variable "estado",
         # el simbolo sea "simbolo"
         # despues se toma el estado destino y se agrega al conjunto
-            for T in self.transiciones:
+            for T in self.Union_AFNs.getTransiciones():
                 edo_prin=T.getEstadoPrincipal() #Estado Principal
                 edo_dest=T.getEstadoDestino() #Estado Destino
                 sim=T.getSimbolo() #Simbolo
@@ -197,57 +210,65 @@ class A_Lexico():
     #verifica que el conjunto que recibe como parametro exista
     #si existe regresa el subindice de la lista
     #si no existe lo agrega a la lista y regresa el subindice
+    
+    def __sonIguales(self,lista1,lista2):
+
+        if len(lista1) == len(lista2):
+
+            for i in range(len(lista1)):
+                if not(lista1[i] == lista2[i]):
+                
+                    return False
+                
+            return True
+        else:
+            return False
+
     def __existeConjunto(self,conjunto):
-        #se da por h
-        #igualdad = False
         #se dara por hecho que por defecto todos los conjuntos estan ordenado
         #sino aplicar un sort()
         subindice_conjunto=0
         for C in self.Conjunto_Epsilon_List:
             #se da por hecho que los conjuntos son diferentes
-            #igualdad = False
-            # La unica forma de que sean iguales es:
-            if len(C)==len(conjunto): #que sean del mismo tamano y todos los elementos iguales
-                #igualdad = True #por ahora son iguales por tamano
-                tam=len(C)
-                for i in range(tam):
-                    if not(C[i]==conjunto[i]): #si uno es diferente, entonces no solo iguales
-                        #igualdad=False 
-                        break #se rompe el ciclo de analisis y se continua con otro conjunto
-                #si no se rompe el ciclo entonces el conjunto se repite y se regresa el subinice
-                #de la lista de conjuntos 
+            #se compara conjunto por conjunto
+            if self.__sonIguales(C,conjunto):
+                #son iguales:se regresa el subindice del sunconjunto examinado
                 return subindice_conjunto
+            else:
+                #se aumenta el subindice ya que pasamos al siguiente conjunto de la lista
+                subindice_conjunto += 1
 
-            #se aumenta el subindice ya que pasamos al siguiente conjunto de la lista
-            subindice_conjunto=subindice_conjunto+1
-
-        #se a verificado con todos y al terminar se da por hecho que no se repite 
+        #este caso sera cuando ninguno de los subconjuntos sean iguales
         #se agrega al la lista de conjuntos
         self.Conjunto_Epsilon_List.append(conjunto)
-        # y se regresa el subindice de la lista
-        return subindice_conjunto-1
+        return subindice_conjunto
 
-
-        
     #Regresara un nuevo conjunto o nada si es un estado final
     #Puede regresar un conjunto repetido
     def __irA(self,conjunto,simbolo):
 
         estados=self.__mover(conjunto,simbolo)
+        print(end="C(")
         conj_return=[]
 
         for e in estados:
+            print(e.__str__(), end=' ')
             conj_temp=self.__creaConjuntoEpsilon(e)
             conj_return.extend(conj_temp)
         conj_return.sort()   
-
+        print(")==>{", end='')
+        for e in conj_return:
+            print(e.__str__(), end=' ')
+        print(end="}")
+        if conj_return == []:
+            return None
         return self.__existeConjunto(conj_return)
 
     #esta es la funcion principal, la que se encarga del analisis del automata 
     def __analisisDe(self):     
 
         #se toma como inicio el estado inicial del automata afn
-        c_temp=self.__creaConjuntoEpsilon(self.afn.getEdoInicial())
+        c_temp = self.__creaConjuntoEpsilon(self.Union_AFNs.getEstadoInicial())
         self.Conjunto_Epsilon_List.append(c_temp)
 
         #se define las variables para el nuevo AFD
@@ -270,9 +291,8 @@ class A_Lexico():
         afd_M=[] #M_list:Formato= [[sublista1],[sublista2],[sublista3],....] listo
             #        sublista: Formato=[estado1,estado2,Simbolos]
         
-
         #El alfabeto del afd sera el mismo que el afN
-        afd_Sigma=self.afn.Sigma
+        afd_Sigma = self.Union_AFNs.getAlfabeto()
 
         #contador para los conjuntos creados
         i=0
@@ -283,14 +303,20 @@ class A_Lexico():
             #inicio del analisis con cada simbolo del alfabeto del automata
             #tambien se agregan los nuevos estados al afd
             afd_K.append(str(i))
-
-            for s in self.Sigma:
+            print("\nTam lista conjuntos:",len(self.Conjunto_Epsilon_List))
+            print("Conjunto:S",i,end="{")
+            for e in self.Conjunto_Epsilon_List[i]:
+                print(e.__str__(), end=' ')
+            print(end="}")
+            for s in self.Union_AFNs.getAlfabeto():
                 #se imprime el cunjunto que est esta revisando
-                print("Conjunto:",i,"Simbolos:",s)
-                for e in self.Conjunto_Epsilon_List[i]:
-                    print(e.__str__())
+                print("\nirA(S", i, ",", s, ")=>", end='')
+
                 indice_conj=self.__irA(self.Conjunto_Epsilon_List[i],s)
 
+                if indice_conj==None:
+                    continue
+                print("==>S",indice_conj,end="")
                 #ya que termino el proceso de la funcion irA()
                 #se empieza con la contruccion del AFD
 
@@ -298,11 +324,11 @@ class A_Lexico():
                 #el subindice del conjunto que se analiza nos define el nombre del estado origen
                 #el subindice del conjunto que da como resultado nos define el nombre del estado destino
                 #el simbolo con el que se analiza la transicion sera el simbolo de la transicion
-                transicion_temp=[str(i),indice_conj,s]
+                transicion_temp=[str(i),str(indice_conj),s]
                 #se agrega la transicion creada
                 afd_M.append(transicion_temp)
 
-            i=i+1
+            i+=1
 
             #para el caso de que ya no existas conjuntos por analizar se rompe el ciclo para terminar
             if i >= len(self.Conjunto_Epsilon_List):
@@ -314,7 +340,7 @@ class A_Lexico():
         
         #Se identificaran como estados de aceptacion aquellos que tu token sean > 0
 
-        for edo_afn in self.afn.K: #estados del afd
+        for edo_afn in self.Union_AFNs.getEstados():  # estados del afn
             if edo_afn.getToken() > 0:
             #al encontrar un estado de aceptacion del afn, ahora se buscaran en el conjunto
                 j=0 #subindice del conjunto
@@ -324,12 +350,27 @@ class A_Lexico():
                         #si e existe como estado de aceptacion en afn
                         if e == edo_afn: #estados del afd
                             #se agrega a la lista de estados de aceptacion definiendo el token del afn
-                            nuevo_edo_final=[j,edo_afn.getToken()]
+                            nuevo_edo_final=[str(j),edo_afn.getToken()]
                             # y se agregara a la lista de estados finales del afd
                             afd_Z.append(nuevo_edo_final)
                     #en caso de no encontrar en el conj_temp[j] se va con el que sigue
                     j=j+1
+    
 
+        print("\n\nConjunto de Estados(Objeto):")
+        print(afd_K)
 
-        #se crea el automata con las propiedadesya creadas
-        return AFN_e("AFD",afd_K,afd_Sigma,afd_S,afd_Z,afd_M)
+        print("Alfabeto que acepta el automata")
+        print(afd_Sigma)
+
+        print("Estado de inicio del automata")
+        print(afd_S)
+
+        print("Conjunto de Estados(Objeto) de aceptacion")
+        print(afd_Z)
+
+        print("Conjunto de Transiciones(Objeto)")
+        print(afd_M)
+                    
+        self.__AFD=AFN_e("AFD_"+self.getNombreALexico(),afd_K,afd_Sigma,afd_S,afd_Z,afd_M)
+        return 
