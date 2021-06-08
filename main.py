@@ -155,66 +155,6 @@ class Ventana(QtWidgets.QWidget):
         #se almacena en la base de datos
         self.db.agregarALexico(a_lexico)
 
-    def __mostrarListaClasesLexicas(self):
-        _translate = QtCore.QCoreApplication.translate
-        
-        #------------INICIO DE LA TABLA DE CLASES LEXICAS---------------
-        total_clases_lexicas=len(self.db.Lista_De_Clases_Lexicas)
-        # Definiendo la cabecera
-        self.ui.tableWidget_ClasesLexicas.setColumnCount(2)
-        item = QtWidgets.QTableWidgetItem() 
-        self.ui.tableWidget_ClasesLexicas.setHorizontalHeaderItem(0, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.ui.tableWidget_ClasesLexicas.setHorizontalHeaderItem(1, item)
-
-        #definiendo las filas
-        self.ui.tableWidget_ClasesLexicas.setRowCount(total_clases_lexicas)
-        
-        #definiendo los numeros de las filas
-        for f in range(total_clases_lexicas):
-            item = QtWidgets.QTableWidgetItem()
-            self.ui.tableWidget_ClasesLexicas.setVerticalHeaderItem(f, item)
-
-        
-        # Definiendo la matriz
-        for f in range(total_clases_lexicas):
-            # Definiendo la columna con los checked
-            item = QtWidgets.QTableWidgetItem()
-            item.setCheckState(QtCore.Qt.Unchecked)
-            self.ui.tableWidget_ClasesLexicas.setItem(f, 0, item)
-
-            # Definiendo la columna faltante
-            item = QtWidgets.QTableWidgetItem()
-            self.ui.tableWidget_ClasesLexicas.setItem(f, 1, item)
-        
-        #etiquetas del numero de filas
-        for f in range(total_clases_lexicas):
-            item = self.ui.tableWidget_ClasesLexicas.verticalHeaderItem(f)
-            item.setText(_translate("Form", str(f+1)))
-
-        item = self.ui.tableWidget_ClasesLexicas.horizontalHeaderItem(0)
-        item.setText(_translate("Form", "Clase Lexica"))
-        item = self.ui.tableWidget_ClasesLexicas.horizontalHeaderItem(1)
-        item.setText(_translate("Form", "Token"))
-
-        __sortingEnabled = self.ui.tableWidget_ClasesLexicas.isSortingEnabled()
-        self.ui.tableWidget_ClasesLexicas.setSortingEnabled(False)
-        
-        f = 0
-        for elem in self.db.Lista_De_Clases_Lexicas:
-            #nombre_AFN, num_estados, str_lenguaje, str_edo_inicial, str_estados_aceptacion, str_transiciones
-            list_aux = [elem.getNombreClaseLexica(),str(elem.getToken())]
-            #print(list_aux)
-            c = 0
-            for dato in list_aux:
-                item = self.ui.tableWidget_ClasesLexicas.item(f, c)
-                item.setText(_translate("Form", dato))
-                c += 1
-
-            f += 1
-
-        self.ui.tableWidget_ClasesLexicas.setSortingEnabled(__sortingEnabled)
-        #------------FIN DE LA TABLA DE CLASES LEXICAS---------------
 
 ##*****************************************Pestania de operaciones******
     def unir(self):
@@ -577,6 +517,65 @@ class Ventana(QtWidgets.QWidget):
 
         self.ui.tableWidget_Mostrar.setSortingEnabled(__sortingEnabled)
 
+    def __mostrarListaClasesLexicas(self):
+        _translate = QtCore.QCoreApplication.translate
+
+        #------------INICIO DE LA TABLA DE CLASES LEXICAS---------------
+        total_clases_lexicas = len(self.db.Lista_De_Clases_Lexicas)
+        # Definiendo la cabecera
+        self.ui.tableWidget_ClasesLexicas.setColumnCount(2)
+        item = QtWidgets.QTableWidgetItem()
+        self.ui.tableWidget_ClasesLexicas.setHorizontalHeaderItem(0, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.ui.tableWidget_ClasesLexicas.setHorizontalHeaderItem(1, item)
+
+        #definiendo las filas
+        self.ui.tableWidget_ClasesLexicas.setRowCount(total_clases_lexicas)
+
+        #definiendo los numeros de las filas
+        for f in range(total_clases_lexicas):
+            item = QtWidgets.QTableWidgetItem()
+            self.ui.tableWidget_ClasesLexicas.setVerticalHeaderItem(f, item)
+
+        # Definiendo la matriz
+        for f in range(total_clases_lexicas):
+            # Definiendo la columna con los checked
+            item = QtWidgets.QTableWidgetItem()
+            item.setCheckState(QtCore.Qt.Unchecked)
+            self.ui.tableWidget_ClasesLexicas.setItem(f, 0, item)
+
+            # Definiendo la columna faltante
+            item = QtWidgets.QTableWidgetItem()
+            self.ui.tableWidget_ClasesLexicas.setItem(f, 1, item)
+
+        #etiquetas del numero de filas
+        for f in range(total_clases_lexicas):
+            item = self.ui.tableWidget_ClasesLexicas.verticalHeaderItem(f)
+            item.setText(_translate("Form", str(f+1)))
+
+        item = self.ui.tableWidget_ClasesLexicas.horizontalHeaderItem(0)
+        item.setText(_translate("Form", "Clase Lexica"))
+        item = self.ui.tableWidget_ClasesLexicas.horizontalHeaderItem(1)
+        item.setText(_translate("Form", "Token"))
+
+        __sortingEnabled = self.ui.tableWidget_ClasesLexicas.isSortingEnabled()
+        self.ui.tableWidget_ClasesLexicas.setSortingEnabled(False)
+
+        f = 0
+        for elem in self.db.Lista_De_Clases_Lexicas:
+            #nombre_AFN, num_estados, str_lenguaje, str_edo_inicial, str_estados_aceptacion, str_transiciones
+            list_aux = [elem.getNombreClaseLexica(), str(elem.getToken())]
+            #print(list_aux)
+            c = 0
+            for dato in list_aux:
+                item = self.ui.tableWidget_ClasesLexicas.item(f, c)
+                item.setText(_translate("Form", dato))
+                c += 1
+
+            f += 1
+
+        self.ui.tableWidget_ClasesLexicas.setSortingEnabled(__sortingEnabled)
+        #------------FIN DE LA TABLA DE CLASES LEXICAS---------------
 
 
 ##*****INICIO DE TODO EL PROGRAMA

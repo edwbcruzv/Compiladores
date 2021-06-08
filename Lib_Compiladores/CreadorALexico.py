@@ -16,9 +16,5 @@ class CreadorALexico:
         # __Nombre_A_Lexico:"nombreALexico"
         Nombre_A_Lexico=str_nombre_a_lexico
 
-        if isinstance(arg, AFN_e):
-            a_lexico = A_Lexico(Nombre_A_Lexico, arg)
-            return a_lexico,"Analizador Lexico Creado"
-
-        return None, "Hubo un error desconocido"
-
+        a_lexico = A_Lexico(Nombre_A_Lexico)
+        return a_lexico, "Analizador Lexico Creado"

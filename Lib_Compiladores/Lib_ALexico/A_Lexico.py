@@ -59,7 +59,7 @@ class A_Lexico():
             #ya existe el AFD
             return
 ##------INICIO DEL ALGORITMO DE ANALISIS DE UNA CADENA USANDO UN AFD----------
-    def analizarCadena(self,cadena):
+    def yylex(self,cadena):
         
         list_cadena=list(cadena)
         Lista_Lexemas=[]
