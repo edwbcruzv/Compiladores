@@ -40,7 +40,10 @@ class Ventana(QtWidgets.QWidget):
         #Area de los analizadores lexicos
         self.ui.pushButton_CrearAnalizador.clicked.connect(self.crearAnalizadorLexico)
 
-        
+        #Area de analisis de las cadenas
+        self.ui.pushButton_AnalizarCad.clicked.connect(self.analizarCadena)
+
+        #Area del cuadro donde se muestra el contenido creado
         self.ui.pushButton_Mostrar.clicked.connect(self.mostrar)
         
 
@@ -155,6 +158,27 @@ class Ventana(QtWidgets.QWidget):
         #se almacena en la base de datos
         self.db.agregarALexico(a_lexico)
 
+    def analizarCadena(self):
+        nombre_a_lexico = self.ui.comboBox_Analizadores.currentText()
+        #print("ALexico:",nombre_a_lexico)
+        cadena = self.ui.textEdit_EntradaCadena.toPlainText()
+        #cadena="24.36+547-962*841/8547+(2.3-854)"
+        #cadena = "34.5+(6/8*(4))"
+        print("Cadena:",cadena)
+
+        a_lexico = self.db.obtenerALexico(nombre_a_lexico)
+
+        #a_lexico.getAFD().mostrarAutomata()
+
+        if not(isinstance(a_lexico,A_Lexico)):
+            self.ui.label_StatusAnalisisCad.setText("Error al Buscar el Analizador Lexico solicitado.")
+            return
+        self.ui.label_StatusAnalisisCad.setText("Analizando cadena")
+        lexemas_list=a_lexico.yylex(cadena)
+        print("Lexemas detectados")
+        print(lexemas_list)
+
+
 
 ##*****************************************Pestania de operaciones******
     def unir(self):
@@ -256,10 +280,6 @@ class Ventana(QtWidgets.QWidget):
         self.__eliminarAComboBox_Automatas(automata)
 
 ##*****************************************Lista de AFNs*********
-##*****************************************Lista de Clases Lexicas******
-        
-        
-##*****************************************Lista de Clases Lexicas******
 
 ##*****************************************Lista de Analizadores Lexicos******
         

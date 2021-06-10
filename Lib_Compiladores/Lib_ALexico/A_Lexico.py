@@ -63,52 +63,78 @@ class A_Lexico():
         
         list_cadena=list(cadena)
         Lista_Lexemas=[]
-        Lexema_temp=[]
+        subcadena_lexema=[]
 
         tam_cadena=len(list_cadena)
-        #inicio del algoritmo
+        #inicio del algoritmo 
         #posicion del estado del afn
-        Estado_Actual=self.afd.getEdoInicial()
+        Estado_Actual = self.getAFD().getEstadoInicial()
         #nos indicara si pasamos por un estado de aceptacion
         Bandera_Edo_Acept=False 
         cursor_cadena=0 
         
         #mientras que no sea el fin de la cadena
-        while cursor_cadena==tam_cadena:
+        while not(cursor_cadena==tam_cadena):
             simbolo=list_cadena[cursor_cadena]
 
             #ver si existe una transicion  del estado actual con el simbolo de la cadena actual
             Estado_Destino,boleano=self.__existeTransicion(Estado_Actual,simbolo)
             #si boolean el False hay un error
-            if boleano:
-                Lexema_temp.append(simbolo)
+            print("δ(", Estado_Actual.getNombre(),
+                  ",", simbolo, ")", end="=>")
+            if boleano==True:
+                #se agrega el simbolo a la lista en caso de ser parte d eun lexema
+                subcadena_lexema.append(simbolo)
+                print(Estado_Destino.getNombre(),end="  ")
                 #si estado actual es un estado de aceptacion
-                if esestadoAceptacion(Estado_Actual):
-                    #print(Estado_Actual.getToken())
+                if Estado_Destino.getToken() > 0:
+                    print("Token:", Estado_Destino.getToken())
                     Bandera_Edo_Acept=True
+                    if cursor_cadena == tam_cadena-1:
+                        lex_temp = self.__nuevoLexema(
+                            subcadena_lexema, Estado_Destino.getToken())
+                        print(lex_temp)
+                        Lista_Lexemas.append(lex_temp)
                 else:#no es estado de aceptacion
+                    print(" vacio")
                     Bandera_Edo_Acept=False 
-                #seguimos sin pasar por estado de aceptacion
-                Estado_Actual=Estado_Destino
-                cursor_cadena=cursor_cadena+1
-                
+                    #seguimos sin pasar por estado de aceptacion
 
+                #pasamos al estado destino de la transicion analizada
+                Estado_Actual=Estado_Destino
+                #pasamos a siguiente caracter de la casena
+                cursor_cadena+=1
+                
             #no esiste ninguna transicion entonces hay un error
-            else:
-                #checar si se paso por un estado de aceptacion
+            elif boleano == False:
+                print("Error")
+                #checar si anteriormente se paso por un estado de aceptacion
                 if Bandera_Edo_Acept:
-                    #se descarga el lexema actual
-                    Lista_Lexemas.append(self.__nuevoLexema(Lexema_temp,Estado_Actual.token()))
-                    Lexema_temp=[]
-                    #posicion del estado del afd
-                    Estado_Actual=self.afd.getEdoInicial()
+                    #se carga el lexema actual
                     
-                #no se ha pasado por ningun estado de aceptacion
-                else:
+                    lex_temp=self.__nuevoLexema(
+                        subcadena_lexema, Estado_Actual.getToken())
+                    print(lex_temp)
+                    Lista_Lexemas.append(lex_temp)
+                    subcadena_lexema=[]
                     #posicion del estado del afd
-                    Estado_Actual=self.afd.getEdoInicial()
+                    Estado_Actual = self.getAFD().getEstadoInicial()
+                    print("se ha reiniciado el automata,")
+                    Bandera_Edo_Acept = False
+                    
+                    
+                #no se ha pasado por ningun estado de aceptacion se trata de un error y es
+                #una cadena lexicamente incorrecta
+                else:
+                    print("cadena lexicamente incorrecta")
+                    return None#duda
+                    #posicion del estado del afd
+                    #Estado_Actual = self.getAFD().getEstadoInicial()
                     #se descarta el lexema
-                    Lexema_temp=[]
+                    #subcadena_lexema=[]
+                
+                #al existir un error y al procesarlo nos mantenemos
+                #en el caracter actual de la cadena
                     
         return Lista_Lexemas
 
@@ -118,11 +144,11 @@ class A_Lexico():
         #se Busca si existe una transicion en el afd 
     def __existeTransicion(self,Estado_Actual,Simbolo):
         
-        for T in self.afdTransiciones:
-            if T[0]==Estado_Actual and T[2]==Simbolo:
-                return T[1],True #si existe
+        for T in self.getAFD().getTransiciones():
+            if T.getEstadoPrincipal()== Estado_Actual and T.getSimbolo() == Simbolo:
+                return T.getEstadoDestino(),True #si existe
         #no existe
-        return [],False
+        return None,False
 
     def __lt__(self,a_lexico):
         return self.getNombreALexico() < a_lexico.getNombreALexico()
@@ -357,20 +383,20 @@ class A_Lexico():
                     j=j+1
     
 
-        print("\n\nConjunto de Estados(Objeto):")
-        print(afd_K)
+        # print("\n\nConjunto de Estados(Objeto):")
+        # print(afd_K)
 
-        print("Alfabeto que acepta el automata")
-        print(afd_Sigma)
+        # print("Alfabeto que acepta el automata")
+        # print(afd_Sigma)
 
-        print("Estado de inicio del automata")
-        print(afd_S)
+        # print("Estado de inicio del automata")
+        # print(afd_S)
 
-        print("Conjunto de Estados(Objeto) de aceptacion")
-        print(afd_Z)
+        # print("Conjunto de Estados(Objeto) de aceptacion")
+        # print(afd_Z)
 
-        print("Conjunto de Transiciones(Objeto)")
-        print(afd_M)
+        # print("Conjunto de Transiciones(Objeto)")
+        # print(afd_M)
                     
         self.__AFD=AFN_e("AFD_"+self.getNombreALexico(),afd_K,afd_Sigma,afd_S,afd_Z,afd_M)
         return 

@@ -82,4 +82,4 @@ class calculadora :
 
 class posfija :
 
-    
+    pass
