@@ -5,23 +5,22 @@ Clase Léxica (hereda su analizador léxico, su AFD convertido)
 '''
 
 class calculadora : 
-    def __init__(Obj):
-        ## se debe de poner aqui el arreglo de
-        ## tokens que rwgresa
-        ##Aqui se debe inicializar precisamente 
-        it = 0
-        pass
+    Arreglo = []
+    it = 0
+    vf = 0.0
+    def __init__(self, lista_lexemas):
+        self.Arreglo = lista_lexemas
 
     def evalua(self):
-        valor = 0.0
-        if self.E(valor):
+        valor = 0.0 #este valor 
+        if self.E(valor): #es el mismo que se pasa a esta
             Token = self.gettoken()
-            if Token == 0:#fin de cadena
-                valor = valor
+            if Token == fin_de_la_lista : ## ya no hay mas tokens
+                vf = valor # es decir al final ya se calculo el valor final de la operación
                 return True
         return False ## con este false 
         #solo se deberia decir que la cadena
-        #no es correcta sinacticamente
+        #no es correcta sinacticamente, cosa que ya hiciste con yylex
     
     ## E -> TE'
     def E(self, valor):
@@ -34,7 +33,8 @@ class calculadora :
     def Ep(self, valor):
         Token = self.gettoken()
         v2 = 0.0
-        if Token == ( TOKEN.MAS or TOKEN.MENOS):
+        if Token == ( TOKEN.MAS  or TOKEN.MENOS ):##10 o 20, 10 es el de la suma y 20 el de la resta
+            ##estos numeros serian los tokens de A_Calculadora
             if self.T(v2):
                 if Token == TOKEN.MAS:
                     valor += v2
@@ -80,7 +80,7 @@ class calculadora :
                     return True
             return False
         elif Token == TOKEN.NUM:
-            valor = float(self.getLexema()) ##Ejemplo si 34.6+54/2 Lexema 34.6
+            valor = float(self.getlexema(self.it -1)) ##Ejemplo si 34.6+54/2 Lexema 34.6
             return True
         return False
 
@@ -89,31 +89,33 @@ class calculadora :
     # it es una variable iterable entera
     # cuando se llama gettoken,se regresa el token 
     # [38,70],[+,10] retornara 70 si it es 0
-        Token =  ArreglArreglo_de_tokens_resultantes_en_orden[it][1]
+        Token = self.Arreglo[it][1]
         it+=1
         return Token
 
     def getlexema(self, i):
-        return  Arreglo[i][0]
+        return self.Arreglo[i][0]
             
     def undotoken(self):
     #solo se regresa en un indice para leer wl arreglo de los tokens
         it-=1  
 
 class posfija :
-    def __init__(Obj):
+    Arreglo = []
+    it = 0
+    vf = ''
+    def __init__(lista_lexemas):
         ## se debe de poner aqui el arreglo de
         ## tokens que rwgresa
         ##Aqui se debe inicializar precisamente 
-        it = 0
-        pass
+        self.Arreglo = lista_lexemas
 
     def evalua(self):
         valor = ''
         if self.E(valor):
             Token = self.gettoken()
-            if Token == 0:##fin de cadena
-                valor = valor
+            if Token == fin_de_los_lexemas:##fin de cadena
+                vf = valor
                 return True
         return False ## con este false 
         #solo se deberia decir que la cadena
@@ -133,9 +135,9 @@ class posfija :
         if Token == ( TOKEN.MAS or TOKEN.MENOS):
             if self.T(v2):
                 if Token == TOKEN.MAS:#10
-                    valor = valor + v2 + '+'
+                    valor = valor + v2 + '+' # concatenacion
                 elif Token == TOKEN.MENOS:#20
-                    valor = valor + v2 + '-'
+                    valor = valor + v2 + '-' # concatenacion
                 if self.Ep(valor):
                     return True
             return False
@@ -156,9 +158,9 @@ class posfija :
         if Token == ( TOKEN.POR or TOKEN.ENTRE):
             if self.F(v2):
                 if Token == TOKEN.POR:
-                    valor = valor + v2 + '*'
+                    valor = valor + v2 + '*' # concatenacion
                 elif Token == TOKEN.ENTRE:
-                    valor = valor + v2 + '/'
+                    valor = valor + v2 + '/' # concatenacion
                 if self.Tp(valor):
                     return True
             return False
@@ -185,12 +187,12 @@ class posfija :
     # it es una variable iterable entera
     # cuando se llama gettoken,se regresa el token 
     # [38,70],[+,10] retornara 70 si it es 0
-        Token =  ArreglArreglo_de_tokens_resultantes_en_orden[it][1]
+        Token = self.Arreglo[it][1]
         it+=1
         return Token
 
     def getlexema(self, i):
-        return Arreglo[i][0]
+        return self.Arreglo[i][0]
             
     def undotoken(self):
     #solo se regresa en un indice para leer wl arreglo de los tokens
