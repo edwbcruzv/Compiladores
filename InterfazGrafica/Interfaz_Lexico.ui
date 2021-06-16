@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>7</number>
+    <number>5</number>
    </property>
    <widget class="QWidget" name="Crear">
     <attribute name="title">
@@ -833,7 +833,7 @@
       <string>Selecciones un analizador lexico</string>
      </property>
     </widget>
-    <widget class="QTableView" name="tableView_AnalisisCad">
+    <widget class="QTableWidget" name="tableWidget_AnalisisCad">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -920,7 +920,7 @@
       <string>Seleccionar el analizador de la calculadora</string>
      </property>
     </widget>
-    <widget class="QTableView" name="tableView_Calculadora">
+    <widget class="QTableWidget" name="tableWidget_Calculadora">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -1017,7 +1017,7 @@
       <string>Convertir</string>
      </property>
     </widget>
-    <widget class="QTableView" name="tableView_ERtoAFD">
+    <widget class="QTableWidget" name="tableWidget_ERtoAFD">
      <property name="geometry">
       <rect>
        <x>50</x>

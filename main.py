@@ -7,7 +7,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from Lib_Compiladores.Lib_AFN_e.AFN_e import AFN_e
 from Lib_Compiladores.Lib_ClaseLexica.ClaseLexica import ClaseLexica
 from Lib_Compiladores.Lib_ALexico.A_Lexico import A_Lexico
-from BaseDatos import BaseDatos
+from Datos.BaseDatos import BaseDatos
+from SintacticoCalculadora import *
 import copy
 
 class Ventana(QtWidgets.QWidget):
@@ -42,6 +43,9 @@ class Ventana(QtWidgets.QWidget):
 
         #Area de analisis de las cadenas
         self.ui.pushButton_AnalizarCad.clicked.connect(self.analizarCadena)
+
+        #Area de la calculadora
+        self.ui.pushButton_Calculadora.clicked.connect(self.calculadora)
 
         #Area del cuadro donde se muestra el contenido creado
         self.ui.pushButton_Mostrar.clicked.connect(self.mostrar)
@@ -154,15 +158,16 @@ class Ventana(QtWidgets.QWidget):
         #se muestra el automata en consola
         a_lexico.getAFD().mostrarAutomata()
         #se agrega a el combobox del  lexicos
-        self.ui.comboBox_Analizadores.addItem(a_lexico.getNombreALexico())
+        self.ui.comboBox_Analizadores.addItem(a_lexico.getNombreALexico()) 
+        self.ui.comboBox_Calculadora.addItem(a_lexico.getNombreALexico()) 
         #se almacena en la base de datos
         self.db.agregarALexico(a_lexico)
 
     def analizarCadena(self):
         nombre_a_lexico = self.ui.comboBox_Analizadores.currentText()
         #print("ALexico:",nombre_a_lexico)
-        cadena = self.ui.textEdit_EntradaCadena.toPlainText()
-        #cadena="24.36+547-962*841/8547+(2.3-854)"
+        #cadena = self.ui.textEdit_EntradaCadena.toPlainText()
+        cadena="24.36+547-962*841/8547+(2.3-854)"
         #cadena = "34.5+(6/8*(4))"
         print("Cadena:",cadena)
 
@@ -175,8 +180,31 @@ class Ventana(QtWidgets.QWidget):
             return
         self.ui.label_StatusAnalisisCad.setText("Analizando cadena")
         lexemas_list=a_lexico.yylex(cadena)
-        print("Lexemas detectados")
+        #print("Lexemas detectados")
         print(lexemas_list)
+        self.mostrarLexemas(lexemas_list)
+
+    def calculadora(self):
+        nombre_a_lexico = self.ui.comboBox_Calculadora.currentText()
+        #print("ALexico:",nombre_a_lexico)
+        #cadena = self.ui.textEdit_EntradaCadena.toPlainText()
+        #cadena="24.36+547-962*841/8547+(2.3-854)"
+        #cadena = "34.5+(6/8*(4))"
+        print("Cadena:",cadena)
+
+        a_lexico = self.db.obtenerALexico(nombre_a_lexico)
+
+        #a_lexico.getAFD().mostrarAutomata()
+
+        if not(isinstance(a_lexico,A_Lexico)):
+            self.ui.label_.setText("Error al Buscar el Analizador Lexico solicitado.")
+            return
+        self.ui.label_.setText("Analizando cadena")
+        lexemas_list=a_lexico.yylex(cadena)
+
+        if not(isinstance(lexemas_list,list)):
+
+
 
 
 
@@ -272,6 +300,7 @@ class Ventana(QtWidgets.QWidget):
 
         for a_lexico in self.db.Lista_De_A_Lexicos:
             self.ui.comboBox_Analizadores.addItem(a_lexico.getNombreALexico())
+            self.ui.comboBox_Calculadora.addItem(a_lexico.getNombreALexico())
 ##*****************************************Lista de AFNs*********
 
     def __eliminarAutomataLista(self,automata):
@@ -597,6 +626,60 @@ class Ventana(QtWidgets.QWidget):
         self.ui.tableWidget_ClasesLexicas.setSortingEnabled(__sortingEnabled)
         #------------FIN DE LA TABLA DE CLASES LEXICAS---------------
 
+    def mostrarLexemas(self,lista_lexemas):
+        _translate = QtCore.QCoreApplication.translate
+
+        # definiendo numero de columnas
+        self.ui.tableWidget_AnalisisCad.setColumnCount(2)
+        # definiendo numero de filas (usando numero de automatas en la lista)
+        total_lexemas = len(lista_lexemas)
+        print("Total de Lexemas:", total_lexemas)
+        self.ui.tableWidget_AnalisisCad.setRowCount(total_lexemas)
+
+        #definiendo los numeros de las filas
+        for f in range(total_lexemas):
+            item = QtWidgets.QTableWidgetItem()
+            self.ui.tableWidget_AnalisisCad.setVerticalHeaderItem(f, item)
+
+        #definiendo las columnas y la cabecera
+        for c in range(2):
+            item = QtWidgets.QTableWidgetItem()
+            self.ui.tableWidget_AnalisisCad.setHorizontalHeaderItem(c, item)
+
+        ##definiendo los cuadros de las tabla (matriz)
+        for f in range(total_lexemas):
+            for c in range(2):
+                item = QtWidgets.QTableWidgetItem()
+                self.ui.tableWidget_AnalisisCad.setItem(f, c, item)
+
+        #etiquetas del numero de filas
+        for f in range(total_lexemas):
+            item = self.ui.tableWidget_AnalisisCad.verticalHeaderItem(f)
+            item.setText(_translate("Form", str(f+1)))
+
+        #etiquetas de la cabecera
+        item = self.ui.tableWidget_AnalisisCad.horizontalHeaderItem(0)
+        item.setText(_translate("Form", "Subcadena"))
+        item = self.ui.tableWidget_AnalisisCad.horizontalHeaderItem(1)
+        item.setText(_translate("Form", "Token"))
+        
+
+        ##nombre e items
+        __sortingEnabled = self.ui.tableWidget_AnalisisCad.isSortingEnabled()
+        self.ui.tableWidget_AnalisisCad.setSortingEnabled(False)
+
+        f = 0
+        for elem in lista_lexemas:
+            print(elem)
+            c = 0
+            for dato in elem:
+                item = self.ui.tableWidget_AnalisisCad.item(f, c)
+                item.setText(_translate("Form", str(dato)))
+                c += 1
+
+            f += 1
+
+        self.ui.tableWidget_AnalisisCad.setSortingEnabled(__sortingEnabled)
 
 ##*****INICIO DE TODO EL PROGRAMA
 if __name__=='__main__':
