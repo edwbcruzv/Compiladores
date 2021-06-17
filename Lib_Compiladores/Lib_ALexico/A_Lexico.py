@@ -135,7 +135,7 @@ class A_Lexico():
                 
                 #al existir un error y al procesarlo nos mantenemos
                 #en el caracter actual de la cadena
-                    
+        Lista_Lexemas.append(["$", -1])           
         return Lista_Lexemas
 
     def __nuevoLexema(self,Lexema_lista,token):

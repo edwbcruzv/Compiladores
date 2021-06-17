@@ -7,8 +7,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from Lib_Compiladores.Lib_AFN_e.AFN_e import AFN_e
 from Lib_Compiladores.Lib_ClaseLexica.ClaseLexica import ClaseLexica
 from Lib_Compiladores.Lib_ALexico.A_Lexico import A_Lexico
+from Lib_Compiladores.Lib_ASintactico.A_Sintactico import *
 from Datos.BaseDatos import BaseDatos
-from SintacticoCalculadora import *
 import copy
 
 class Ventana(QtWidgets.QWidget):
@@ -189,7 +189,7 @@ class Ventana(QtWidgets.QWidget):
         #print("ALexico:",nombre_a_lexico)
         #cadena = self.ui.textEdit_EntradaCadena.toPlainText()
         #cadena="24.36+547-962*841/8547+(2.3-854)"
-        #cadena = "34.5+(6/8*(4))"
+        cadena = "20+3-4/7*3"
         print("Cadena:",cadena)
 
         a_lexico = self.db.obtenerALexico(nombre_a_lexico)
@@ -199,16 +199,31 @@ class Ventana(QtWidgets.QWidget):
         if not(isinstance(a_lexico,A_Lexico)):
             self.ui.label_.setText("Error al Buscar el Analizador Lexico solicitado.")
             return
-        self.ui.label_.setText("Analizando cadena")
+        #self.ui.label_.setText("Analizando cadena")
         lexemas_list=a_lexico.yylex(cadena)
+        print(lexemas_list)
+        ######
+        Calc = Calculadora(lexemas_list)
+        if Calc.evalua() == True:
+            print("La cadena es válida sintácticamente.")
+            print("El resultado es : "+str(Calc.evaluacion()))
+        else:
+            print("La cadena no es válida sintácticamente.")
+
+        Pos = Posfija(lexemas_list)
+        if Pos.evalua() == True:
+            print("La cadena es válida sintácticamente.")
+            print("La expresion posfija es : "+Pos.evaluacion())
+        else:
+            print("La cadena no es válida sintácticamente.")
 
         if not(isinstance(lexemas_list,list)):
+            pass
 
 
 
 
 
-##*****************************************Pestania de operaciones******
     def unir(self):
         nombre_union=self.ui.lineEdit_UnionNom.text()
         nombre_A1=self.ui.comboBox_A1Unir.currentText()
