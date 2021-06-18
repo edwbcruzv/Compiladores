@@ -193,7 +193,6 @@ class Ventana(QtWidgets.QWidget):
         print("Cadena:",cadena)
 
         a_lexico = self.db.obtenerALexico(nombre_a_lexico)
-
         #a_lexico.getAFD().mostrarAutomata()
 
         if not(isinstance(a_lexico,A_Lexico)):
@@ -220,7 +219,20 @@ class Ventana(QtWidgets.QWidget):
         if not(isinstance(lexemas_list,list)):
             pass
 
-
+        #####
+        lg = [["A",329],["->",210],["C",329],["B",329],[";",59],
+            ["B",329],["->",210],["+",329],["C",329],["B",329],["|",179],["-",329],["C",329],["B",329],["|",179],["@",329],[";",59],
+            ["C",329],["->",210],["E",329],["D",329],[";",59],
+            ["D",329],["->",210],["*",329],["E",329],["D",329],["|",179],["/",329],["E",329],["D",329],["|",179],["@",329],[";",59],
+            ["E",329],["->",210],["n",329],["u",329],["m",329],["|",179],["(",329],["A",329],[")",329],[";",59],
+            ["$",-1]]
+        Gragrama = GG(lg)
+        if Gragrama.evalua() == True:
+            print("La gramática es válida sintácticamente.")
+            print("El resultado es : \n"+Gragrama.evaluacion())
+        else:
+            print("La cadena no es válida sintácticamente.")
+        
 
 
 
