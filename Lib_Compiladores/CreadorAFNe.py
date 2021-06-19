@@ -100,15 +100,24 @@ class CreadorAFNe:
 
     # str_lenguaje: "simbolo1,simbolo2,simbolo3"
     def __ValidaLenguaje(self,str_lenguaje): #terminado
-        str_aux1=str_lenguaje.split(',')
-        # str_aux2="".join(str_aux1.split('['))
-        # str_aux3="".join(str_aux2.split(']'))
-        # str_aux4="".join(str_aux3.split('-'))
-        #print(str_aux1)
-        for s in str_aux1:
-            if not(len(s)==1):
+        list_aux1=str_lenguaje.split(',')
+        lista_retorno=[]
+        for s in list_aux1:
+            if len(s)==1:
+                lista_retorno.append(s)
+            elif "[" in s and "-" in s and "]" in s :
+                #print("procesando rango")
+                str_aux=s[1:len(s)]
+                str_aux=str_aux[0:len(str_aux)-1]
+                #print(str_aux)
+
+                for n in range(ord(str_aux[0]),ord(str_aux[2])+1):
+                    lista_retorno.append(chr(n))
+                
+            else:
                 return None
-        return str_aux1 #:["a","b","c",.....]
+        #print(list_aux1)
+        return lista_retorno #:["a","b","c",.....]
 
     # str_estados_aceptacion: "edo1-edo2-edo3" o "[edo1,token]-[edo2,token]-[edo3,token]"
     def __ValidaEstadosAceptacion(self,str_estados_aceptacion):#terminardo
@@ -138,28 +147,30 @@ class CreadorAFNe:
     # str_transiciones:"[edo,edo,simbolo]-[edo,edo,simbolo]-[edo,edo,simbolo]"
     def __ValidaTransiciones(self,str_transiciones):#terminados
 
-        #en el caso de que se use el signo - y evitar confusiones
-        bandera=False
-        if "-]" in str_transiciones:
-            #print("true",str_transiciones)
-            str_transiciones = str_transiciones.replace("-]", "/+]")
-            #print("true", str_transiciones)
-            bandera=True
-
+        list_aux1=str_transiciones.split("]-[")
+        tam_list=len(list_aux1)
+        tam=len(list_aux1[0])
+        list_aux1[0]=list_aux1[0][1:tam]
+        tam=len(list_aux1[tam_list-1])
+        list_aux1[tam_list-1]=list_aux1[tam_list-1][0:tam-1]
         
-        str_aux1="".join(str_transiciones.split('-'))
-        str_aux2="".join(str_aux1.split('['))
-        str_aux3=str_aux2.split(']')
-
-        #en el caso de que se use el signo - y evitar confusiones
-        if bandera==True:
-            #print(str_aux3)
-            for i in range(len(str_aux3)):
-                str_aux3[i] = str_aux3[i].replace("/+", "-")
+        #print(list_aux1)
         
         lista_retorno=[]
-        for l in str_aux3:
-            lista_retorno.append(l.split(','))
+        for l in list_aux1:
+            sub_list=l.split(',')
+
+            if "[" in sub_list[2] and "-" in sub_list[2] and "]" in sub_list[2] :
+                #print("procesando rango")
+                s=sub_list[2]
+                str_aux=s[1:len(s)]
+                str_aux=str_aux[0:len(str_aux)-1]
+                #print(str_aux)
+                for n in range(ord(str_aux[0]),ord(str_aux[2])+1):
+                    lista_retorno.append([sub_list[0],sub_list[1],chr(n)])
+            else:
+                lista_retorno.append(sub_list)
+
 
         for l in lista_retorno:
             if l == [] or l == [""]:

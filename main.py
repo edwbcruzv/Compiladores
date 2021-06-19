@@ -47,6 +47,12 @@ class Ventana(QtWidgets.QWidget):
         #Area de la calculadora
         self.ui.pushButton_Calculadora.clicked.connect(self.calculadora)
 
+        #area de ER to AFD
+        self.ui.pushButton_ERtoAFD.clicked.connect(self.ERtoAFD)
+
+        #area del analizador de gramaticas
+        self.ui.pushButton_Gramaticas.clicked.connect(self.analizadorGramaticas)
+
         #Area del cuadro donde se muestra el contenido creado
         self.ui.pushButton_Mostrar.clicked.connect(self.mostrar)
         
@@ -68,12 +74,18 @@ class Ventana(QtWidgets.QWidget):
         # print(str_estados_aceptacion)
         # print(str_transiciones)
 
+        # nombreAFN="borrameafn"
+        # num_estados="2"
+        # str_lenguaje="a,[0-9]"
+        # str_estados_aceptacion="1-2"
+        # str_transiciones="[0,1,a]-[0,2,[0-9]]"
+
         #se valida el automata
         for n in self.db.Lista_De_AFN:
             if nombreAFN == n.getNombreAFN():
                 #Se manda un status a la interfaz grafica
                 self.ui.label_StatusCrear.setText("Ese nombre ya existe, use otro")
-                return
+                return  
                                                 
         afn,respuesta=self.db.CrearAutomataAFN(nombreAFN,num_estados,str_lenguaje,"0",str_estados_aceptacion,str_transiciones)
 
@@ -82,10 +94,8 @@ class Ventana(QtWidgets.QWidget):
         #su hubo un error se termina el proceso
         if not(isinstance(afn,AFN_e)):
             return        
-        
         #se muestra el automata en consola
-        # afn.mostrarAutomata()
-
+        #afn.mostrarAutomata()
         #print("DataBase:",afn.toDataBase())
         #se agrega a los combobox
         self.__agregarAComboBox_Automatas(afn.getNombreAFN())
@@ -187,8 +197,7 @@ class Ventana(QtWidgets.QWidget):
     def calculadora(self):
         nombre_a_lexico = self.ui.comboBox_Calculadora.currentText()
         #print("ALexico:",nombre_a_lexico)
-        #cadena = self.ui.textEdit_EntradaCadena.toPlainText()
-        #cadena="24.36+547-962*841/8547+(2.3-854)"
+        cadena = self.ui.textEdit_Calculadora.toPlainText()
         cadena = "20+3-4/7*3"
         print("Cadena:",cadena)
 
@@ -196,24 +205,32 @@ class Ventana(QtWidgets.QWidget):
         #a_lexico.getAFD().mostrarAutomata()
 
         if not(isinstance(a_lexico,A_Lexico)):
-            self.ui.label_.setText("Error al Buscar el Analizador Lexico solicitado.")
+            self.ui.label_StatusCalculadora.setText("Error al Buscar el Analizador Lexico solicitado.")
             return
-        #self.ui.label_.setText("Analizando cadena")
+        self.ui.label_StatusCalculadora.setText("Analizando cadena")
+        #se crea el analizador lexico de la calculadora
         lexemas_list=a_lexico.yylex(cadena)
-        print(lexemas_list)
+        #print(lexemas_list)
+        self.mostrarLexemasCalculadora(lexemas_list)
         ######
         Calc = Calculadora(lexemas_list)
         if Calc.evalua() == True:
+            self.ui.label_StatusCalculadora.setText("La cadena es válida sintácticamente.")
             print("La cadena es válida sintácticamente.")
+            self.ui.label_ResultadoCalculadora.setText("El resultado es : "+str(Calc.evaluacion()))
             print("El resultado es : "+str(Calc.evaluacion()))
         else:
+            self.ui.label_StatusCalculadora.setText("La cadena no es válida sintácticamente.")
             print("La cadena no es válida sintácticamente.")
 
         Pos = Posfija(lexemas_list)
         if Pos.evalua() == True:
+            self.ui.label_StatusPostfija.setText("La cadena es válida sintácticamente.")
             print("La cadena es válida sintácticamente.")
+            self.ui.textEdit_SalidaPostfija.setText(Pos.evaluacion())
             print("La expresion posfija es : "+Pos.evaluacion())
         else:
+            self.ui.label_StatusPostfija.setText("La cadena no es válida sintácticamente.")
             print("La cadena no es válida sintácticamente.")
 
         if not(isinstance(lexemas_list,list)):
@@ -232,7 +249,23 @@ class Ventana(QtWidgets.QWidget):
             print("El resultado es : \n"+Gragrama.evaluacion())
         else:
             print("La cadena no es válida sintácticamente.")
+
+    def ERtoAFD(self):
+        cadena = self.ui.textEdit_ERtoAFD.toPlainText()
+        print("Cadena:",cadena)
+
+
         
+    def analizadorGramaticas(self):
+        nombre_a_lexico = self.ui.comboBox_Gramaticas.currentText()
+        print("ALexico:",nombre_a_lexico)
+        cadena = self.ui.textEdit_Gramaticas.toPlainText()
+        print("Cadena:",cadena)
+        a_lexico = self.db.obtenerALexico(nombre_a_lexico)
+
+        if not(isinstance(a_lexico,A_Lexico)):
+            self.ui.label_StatusGramaticas.setText("Error al Buscar el Analizador Lexico solicitado.")
+            return
 
 
 
@@ -707,6 +740,62 @@ class Ventana(QtWidgets.QWidget):
             f += 1
 
         self.ui.tableWidget_AnalisisCad.setSortingEnabled(__sortingEnabled)
+
+    def mostrarLexemas(self,lista_lexemas):
+        _translate = QtCore.QCoreApplication.translate
+
+        # definiendo numero de columnas
+        self.ui.tableWidget_Calculadora.setColumnCount(2)
+        # definiendo numero de filas (usando numero de automatas en la lista)
+        total_lexemas = len(lista_lexemas)
+        print("Total de Lexemas:", total_lexemas)
+        self.ui.tableWidget_Calculadora.setRowCount(total_lexemas)
+
+        #definiendo los numeros de las filas
+        for f in range(total_lexemas):
+            item = QtWidgets.QTableWidgetItem()
+            self.ui.tableWidget_Calculadora.setVerticalHeaderItem(f, item)
+
+        #definiendo las columnas y la cabecera
+        for c in range(2):
+            item = QtWidgets.QTableWidgetItem()
+            self.ui.tableWidget_Calculadora.setHorizontalHeaderItem(c, item)
+
+        ##definiendo los cuadros de las tabla (matriz)
+        for f in range(total_lexemas):
+            for c in range(2):
+                item = QtWidgets.QTableWidgetItem()
+                self.ui.tableWidget_Calculadora.setItem(f, c, item)
+
+        #etiquetas del numero de filas
+        for f in range(total_lexemas):
+            item = self.ui.tableWidget_Calculadora.verticalHeaderItem(f)
+            item.setText(_translate("Form", str(f+1)))
+
+        #etiquetas de la cabecera
+        item = self.ui.tableWidget_Calculadora.horizontalHeaderItem(0)
+        item.setText(_translate("Form", "Subcadena"))
+        item = self.ui.tableWidget_Calculadora.horizontalHeaderItem(1)
+        item.setText(_translate("Form", "Token"))
+        
+
+        ##nombre e items
+        __sortingEnabled = self.ui.tableWidget_Calculadora.isSortingEnabled()
+        self.ui.tableWidget_AnalisisCad.setSortingEnabled(False)
+
+        f = 0
+        for elem in lista_lexemas:
+            print(elem)
+            c = 0
+            for dato in elem:
+                item = self.ui.tableWidget_Calculadora.item(f, c)
+                item.setText(_translate("Form", str(dato)))
+                c += 1
+
+            f += 1
+
+        self.ui.tableWidget_Calculadora.setSortingEnabled(__sortingEnabled)
+
 
 ##*****INICIO DE TODO EL PROGRAMA
 if __name__=='__main__':
