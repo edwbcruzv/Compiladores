@@ -251,6 +251,7 @@ class GG():
             Token = self.gettoken()
             if Token == -1 : ## ya no hay mas tokens
                 self.vf = valor # es decir al final ya se calculo el valor final de la operación
+                del self
                 return True
         return False ## con este false
     
@@ -267,15 +268,18 @@ class GG():
         if self.R(valor):
             Token = self.gettoken()
             if Token == 59:## token de ;
-                valor[len(valor)-1] += ';\n'
-                print(valor,"REGLA COMP")
-                if self.Lp():
-                    for i in range(1,len(self.ALLOC3)):
-                        self.ALLOC3[i] = self.ALLOC3[i-1] + self.ALLOC3[i]
-                    valor.append(self.ALLOC3[len(self.ALLOC3)-1])
-                    print(valor, "L")
-                    return True
-                return False
+                valor[len(valor)-1] += ';'
+                Token = self.gettoken()
+                if Token == 10:## token de salto de
+                    valor[len(valor)-1] += '\n'
+                    print(valor,"REGLA COMP")
+                    if self.Lp():
+                        for i in range(1,len(self.ALLOC3)):
+                            self.ALLOC3[i] = self.ALLOC3[i-1] + self.ALLOC3[i]
+                        valor.append(self.ALLOC3[len(self.ALLOC3)-1])
+                        print(valor, "L")
+                        return True
+                    return False
         return False
 
     def Lp(self):
@@ -284,18 +288,21 @@ class GG():
         if self.R(v2):
             Token = self.gettoken()
             if Token == 59:## token de ;
-                v2[len(v2)-1] += ';\n'
-                self.ALLOC3.append(v2[len(v2)-1])
-                print(self.ALLOC3, "PILA3")
-                if self.Lp():
-                    if self.gettoken() == -1:
-                        self.undotoken()
+                v2[len(v2)-1] += ';'
+                Token = self.gettoken()
+                if Token == 10:## token de salto de
+                    v2[len(v2)-1] += '\n'
+                    self.ALLOC3.append(v2[len(v2)-1])
+                    print(self.ALLOC3, "PILA3")
+                    if self.Lp():
+                        if self.gettoken() == -1:
+                            self.undotoken()
+                            return True
+                        for i in range(1,len(self.ALLOC3)):
+                            self.ALLOC3[i] = self.ALLOC3[i-1] + self.ALLOC3[i]
+                        print(self.ALLOC3, "ddd")
                         return True
-                    for i in range(1,len(self.ALLOC3)):
-                        self.ALLOC3[i] = self.ALLOC3[i-1] + self.ALLOC3[i]
-                    print(self.ALLOC3, "ddd")
-                    return True
-                return False
+                    return False
         self.undotoken()
         return True
 
@@ -376,11 +383,13 @@ class GG():
     
     
     def Dp(self):
-        Token = self.gettoken()
-        if Token == 329: ## cualquier
-            self.ALLOC.append(self.getlexema())
-            if self.Dp():
-                return True
+        t = self.gettoken()
+        if t == 32:
+            Token = self.gettoken()
+            if Token == 329: ## cualquier
+                self.ALLOC.append(self.getlexema())
+                if self.Dp():
+                    return True
         self.undotoken()
         return True
     
@@ -400,7 +409,14 @@ class GG():
         return self.vf[len(self.vf)-1]
 
 
-            
+class LL1():
+
+    def __init__(self):
+        pass
+    
+    
+    
+    
 '''
 A = [["Ap",329],["->",210],["C",329],["B",329],[";",59],
     ["B",329],["->",210],["+",329],["C",329],["B",329],["|",179],["-",329],["C",329],["B",329],["|",179],["@",329],[";",59],

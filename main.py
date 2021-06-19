@@ -198,7 +198,7 @@ class Ventana(QtWidgets.QWidget):
         nombre_a_lexico = self.ui.comboBox_Calculadora.currentText()
         #print("ALexico:",nombre_a_lexico)
         cadena = self.ui.textEdit_Calculadora.toPlainText()
-        cadena = "20+3-4/7*3"
+        #cadena = "20+3-4/7*3"
         print("Cadena:",cadena)
 
         a_lexico = self.db.obtenerALexico(nombre_a_lexico)
@@ -211,7 +211,7 @@ class Ventana(QtWidgets.QWidget):
         #se crea el analizador lexico de la calculadora
         lexemas_list=a_lexico.yylex(cadena)
         #print(lexemas_list)
-        self.mostrarLexemasCalculadora(lexemas_list)
+        #self.mostrarLexemasCalculadora(lexemas_list)
         ######
         Calc = Calculadora(lexemas_list)
         if Calc.evalua() == True:
@@ -237,16 +237,27 @@ class Ventana(QtWidgets.QWidget):
             pass
 
         #####
-        lg = [["A",329],["->",210],["C",329],["B",329],[";",59],
-            ["B",329],["->",210],["+",329],["C",329],["B",329],["|",179],["-",329],["C",329],["B",329],["|",179],["@",329],[";",59],
-            ["C",329],["->",210],["E",329],["D",329],[";",59],
-            ["D",329],["->",210],["*",329],["E",329],["D",329],["|",179],["/",329],["E",329],["D",329],["|",179],["@",329],[";",59],
-            ["E",329],["->",210],["n",329],["u",329],["m",329],["|",179],["(",329],["A",329],[")",329],[";",59],
+        lg = [["E",329],["->",210],["T",329],[" ",32],["E'",329],[";",59],["\n",10],
+            ["E'",329],["->",210],["+",329],[" ",32],["T",329],[" ",32],["E'",329],["|",179],["-",329],[" ",32],["T",329],[" ",32],["E'",329],["|",179],["@",329],[";",59],["\n",10],
+            ["T",329],["->",210],["F",329],[" ",32],["T'",329],[";",59],["\n",10],
+            ["T'",329],["->",210],["*",329],[" ",32],["F",329],[" ",32],["T'",329],["|",179],["/",329],[" ",32],["F",329],[" ",32],["T'",329],["|",179],["@",329],[";",59],["\n",10],
+            ["F",329],["->",210],["num",329],["|",179],["(",329],[" ",32],["E",329],[" ",32],[")",329],[";",59],["\n",10],
             ["$",-1]]
+
+        ## la gramatica tiene que tener reglas como se describe
+        ## NOMBREREGLA->SIMBOLO1 SIMBOLO2 SIMBOLO3;\n
+        ## NOMBREREGL'->SIM1 SIM2' SIM3' SIM;\n$  
+        # El simbolo primero debe ir junto con la flecha y el primer simbolo del lado derecho
+        # despues del lado derecho si se quiere, se debe poner un espacio excepto en el ultimo
+        # inmediatamente despues del ultimo va el punto y coma y luego luego el salto de linea
+        # Tambien aplica que debe seguir despues de la barra de OR
+        # Ejemplo : E'->+ T E' |- T E' |@;\n 
+        
         Gragrama = GG(lg)
         if Gragrama.evalua() == True:
             print("La gramática es válida sintácticamente.")
             print("El resultado es : \n"+Gragrama.evaluacion())
+            del Gragrama
         else:
             print("La cadena no es válida sintácticamente.")
 
