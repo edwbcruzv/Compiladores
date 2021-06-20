@@ -1,5 +1,6 @@
 from Lib_Compiladores.Lib_ClaseLexica.ClaseLexica import ClaseLexica
 from Lib_Compiladores.Lib_AFN_e.AFN_e import AFN_e
+import time
 import copy
 class A_Lexico():
 
@@ -193,12 +194,13 @@ class A_Lexico():
             edo_prin=T.getEstadoPrincipal() #Estado Principal
             edo_dest=T.getEstadoDestino() #Estado Destino
             sim=T.getSimbolo() #Simbolo
-            if edo_prin==estado and sim=="E":
+            if edo_prin==estado and sim=="ϵ":
                 #se evita que no se repitan estados en el conjunto
                 for e in conjunto:
                     if e==edo_dest:
-                        #retorna si se repite
+                        #retorna si se repite ϵ
                         return 
+                print(T.__str__())
                 conjunto.append(edo_dest)
                 self.__cerraduraEpsilon(conjunto)
         return
@@ -355,7 +357,7 @@ class A_Lexico():
                 afd_M.append(transicion_temp)
 
             i+=1
-
+            time.sleep(10)
             #para el caso de que ya no existas conjuntos por analizar se rompe el ciclo para terminar
             if i >= len(self.Conjunto_Epsilon_List):
                 break

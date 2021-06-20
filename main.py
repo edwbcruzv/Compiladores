@@ -169,7 +169,8 @@ class Ventana(QtWidgets.QWidget):
         a_lexico.getAFD().mostrarAutomata()
         #se agrega a el combobox del  lexicos
         self.ui.comboBox_Analizadores.addItem(a_lexico.getNombreALexico()) 
-        self.ui.comboBox_Calculadora.addItem(a_lexico.getNombreALexico()) 
+        self.ui.comboBox_Calculadora.addItem(a_lexico.getNombreALexico())
+        self.ui.comboBox_Gramaticas.addItem(a_lexico.getNombreALexico())
         #se almacena en la base de datos
         self.db.agregarALexico(a_lexico)
 
@@ -372,6 +373,7 @@ class Ventana(QtWidgets.QWidget):
         for a_lexico in self.db.Lista_De_A_Lexicos:
             self.ui.comboBox_Analizadores.addItem(a_lexico.getNombreALexico())
             self.ui.comboBox_Calculadora.addItem(a_lexico.getNombreALexico())
+            self.ui.comboBox_Gramaticas.addItem(a_lexico.getNombreALexico())
 ##*****************************************Lista de AFNs*********
 
     def __eliminarAutomataLista(self,automata):
