@@ -37,6 +37,7 @@ class BaseDatos(CreadorAFNe,CreadorClaseLexica,CreadorALexico):
 
             #CrearAutomataAFN(nombreAFN,num_estados,str_lenguaje,str_edo_inicial,str_estados_aceptacion,str_transiciones)
             afn,respuesta=self.CrearAutomataAFN(list_aux[0], list_aux[1], list_aux[2], list_aux[3], list_aux[4], list_aux[5])
+            #afn.mostrarAutomata()
             #print(respuesta)
             if not(isinstance(afn,AFN_e)):
                 print(respuesta)
@@ -60,6 +61,7 @@ class BaseDatos(CreadorAFNe,CreadorClaseLexica,CreadorALexico):
             #print("AFN:",afn)
 
             AFN, respuesta = self.CrearAutomataAFN(afn[0], afn[1], afn[2], afn[3], afn[4], afn[5])
+            #AFN.mostrarAutomata()
             #print(respuesta)
             Clase_Lexica,respuesta = self.CrearClaseLexica(clase_lexica[0], clase_lexica[1], AFN)
             #print(respuesta)

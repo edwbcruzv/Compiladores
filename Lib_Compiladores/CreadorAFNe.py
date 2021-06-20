@@ -123,24 +123,22 @@ class CreadorAFNe:
     def __ValidaEstadosAceptacion(self,str_estados_aceptacion):#terminardo
 
         list_aux1=str_estados_aceptacion.split('-')
-        # :["edo1","edo2","edo3"] o :[ "[edo1,token]" , "[edo2,token]" , "[edo3,token]" ]
-        
+
         lista_retorno=[]
         for elem in list_aux1:
-            str_aux1="".join(elem.split('['))
-            str_aux2="".join(str_aux1.split(']'))
-            sublista=str_aux2.split(',')
 
-            #cuando solo se tiene el puro estado
-            if len(sublista)==1:
-                lista_retorno.append(sublista[0])
-            #cuando esta el estado y su token  
-            elif len(sublista)==2:
+            if "[" in elem and "," in elem and "]" in elem :
+                #cuando exista un token
+                str_aux1="".join(elem.split('['))
+                str_aux2="".join(str_aux1.split(']'))
+                sublista=str_aux2.split(',')
                 lista_retorno.append(sublista)
+            #sin token
+            lista_retorno.append(elem)
 
         #print(lista_retorno)
         # : ["estado1","estado2","estado3",.....]  #cuando es un AFN
-        # : [[sublista1],[sublista2],[sublista3],....] #cuando es un AFD
+        # : [sublista1,sublista2,sublista3,....] #cuando es un AFD
         #        sublista:["estado",Token]    token es un int
         return lista_retorno
         

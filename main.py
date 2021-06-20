@@ -179,7 +179,7 @@ class Ventana(QtWidgets.QWidget):
         #print("ALexico:",nombre_a_lexico)
         cadena = self.ui.textEdit_EntradaCadena.toPlainText()
         #cadena="24.36+547-962*841/8547+(2.3-854)"
-        #cadena = "\**&([0-9]|h)+"
+        cadena = "x&\-?&([0-9]\+[0-9])+"
         print("Cadena:",cadena)
 
         a_lexico = self.db.obtenerALexico(nombre_a_lexico)
@@ -191,7 +191,10 @@ class Ventana(QtWidgets.QWidget):
             return
         self.ui.label_StatusAnalisisCad.setText("Analizando cadena")
         lexemas_list=a_lexico.yylex(cadena)
-        #print("Lexemas detectados")
+        if lexemas_list==None:
+            self.ui.label_StatusAnalisisCad.setText("No se detectaron lexemas")
+            return
+        print("Lexemas detectados")
         print(lexemas_list)
         self.mostrarLexemas(lexemas_list)
 
@@ -754,7 +757,7 @@ class Ventana(QtWidgets.QWidget):
 
         self.ui.tableWidget_AnalisisCad.setSortingEnabled(__sortingEnabled)
 
-    def mostrarLexemas(self,lista_lexemas):
+    def mostrarLexemasCalculadora(self,lista_lexemas):
         _translate = QtCore.QCoreApplication.translate
 
         # definiendo numero de columnas
