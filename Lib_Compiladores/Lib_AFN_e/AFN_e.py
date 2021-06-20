@@ -90,7 +90,7 @@ class AFN_e():
         #si el AFN tiene mas de un estado final
         #todos estos se inicial al nuevo estado final
         for edo_final in self.getEstadosAceptacion():
-            self.__ListTransicionesObjs([[edo_final.getNombre(),nuevo_edo_final.getNombre(),"E"]])
+            self.__ListTransicionesObjs([[edo_final.getNombre(),nuevo_edo_final.getNombre(),"¢"]])
 
         #redefiniendo los nuevos estados finales creados
         self.setEstadosAceptacion([nuevo_edo_final])
@@ -119,7 +119,7 @@ class AFN_e():
         #se une el estado inicial de este automata con el automata2
         edo_init=self.getEstadoInicial()
         edo_init_2=automata2.getEstadoInicial()
-        self.__ListTransicionesObjs([[edo_init.getNombre(),edo_init_2.getNombre(),"E"]])
+        self.__ListTransicionesObjs([[edo_init.getNombre(),edo_init_2.getNombre(),"¢"]])
 
         #se agrega el estado de aceptacion del automata2 a la lista de este automata
         self.getEstadosAceptacion().extend(automata2.getEstadosAceptacion())
@@ -156,24 +156,24 @@ class AFN_e():
         tam1=len(self.getEstadosAceptacion())
         for i in range(tam1):
             edo_final1=self.getEstadosAceptacion()[i]
-            self.__ListTransicionesObjs([[edo_final1.getNombre(),nuevo_edo_final.getNombre(),"E"]])
+            self.__ListTransicionesObjs([[edo_final1.getNombre(),nuevo_edo_final.getNombre(),"¢"]])
 
         #si el 'automata2' tiene mas estados finales
         #todos estos se unical al nuevo estado final
         tam2=len(automata2.getEstadosAceptacion())
         for i in range(tam2):
             edo_final2=automata2.getEstadosAceptacion()[i]
-            self.__ListTransicionesObjs([[edo_final2.getNombre(),nuevo_edo_final.getNombre(),"E"]])
+            self.__ListTransicionesObjs([[edo_final2.getNombre(),nuevo_edo_final.getNombre(),"¢"]])
         
         #ahora se unira el nuevo estado inicial
         #con el estado inicial de este automata
         edo_init1=self.getEstadoInicial()
-        self.__ListTransicionesObjs([[nuevo_edo_inicial.getNombre(),edo_init1.getNombre(),"E"]])
+        self.__ListTransicionesObjs([[nuevo_edo_inicial.getNombre(),edo_init1.getNombre(),"¢"]])
         
         #ahora se unira el nuevo estado inicial
         #con el estado inicial de 'automata2'
         edo_init2=automata2.getEstadoInicial()
-        self.__ListTransicionesObjs([[nuevo_edo_inicial.getNombre(),edo_init2.getNombre(),"E"]])
+        self.__ListTransicionesObjs([[nuevo_edo_inicial.getNombre(),edo_init2.getNombre(),"¢"]])
 
         #redefiniendo los nuevos estados iniciales creados
         #redefiniendo los nuevos estados finales creados
@@ -203,18 +203,18 @@ class AFN_e():
         #todos estos se uniran al estado inicial de
         # 'automata2'
         for e in self.getEstadosAceptacion():
-            self.__ListTransicionesObjs([[e.getNombre(),automata2.getEstadoInicial().getNombre(),"E"]])
+            self.__ListTransicionesObjs([[e.getNombre(),automata2.getEstadoInicial().getNombre(),"¢"]])
 
         #se crea el nuevo estado final
         nuevo_edo_final=self.nuevoEdo()
 
-        print("-----------------Nuevo estado final agregado :",nuevo_edo_final.__str__())
+        #print("-----------------Nuevo estado final agregado :",nuevo_edo_final.__str__())
 
 
         #si el 'automata2' tiene mas estados finales
         #todos estos se inicial al nuevo estado final
         for e in automata2.getEstadosAceptacion():
-            self.__ListTransicionesObjs([[e.getNombre(),nuevo_edo_final.getNombre(),"E"]])
+            self.__ListTransicionesObjs([[e.getNombre(),nuevo_edo_final.getNombre(),"¢"]])
 
         #redefiniendo los nuevos estados finales creados
         self.setEstadosAceptacion([nuevo_edo_final])
@@ -222,7 +222,7 @@ class AFN_e():
 
     def cerraduraPositiva(self):
         #se crea el nuevo estado inicial
-        nuevo_edo_inicial=self.nuevoEdo()
+        #nuevo_edo_inicial=self.nuevoEdo()--------
         #se crea el nuevo estado final
         nuevo_edo_final=self.nuevoEdo()
 
@@ -231,22 +231,22 @@ class AFN_e():
         tam=len(self.getEstadosAceptacion())
         for i in range(tam):
             edo_final1=self.getEstadosAceptacion()[i]
-            t=[edo_final1.getNombre(),nuevo_edo_final.getNombre(),"E"]
+            t=[edo_final1.getNombre(),nuevo_edo_final.getNombre(),"¢"]
             self.__ListTransicionesObjs([t])
         
         #se crea la transicion que retrocede al estado inicial
-        t=[nuevo_edo_final.getNombre(),self.getEstadoInicial().getNombre(),"E"]
+        t=[nuevo_edo_final.getNombre(),self.getEstadoInicial().getNombre(),"¢"]
         self.__ListTransicionesObjs([t])
 
         #ahora se unira el nuevo estado inicial
         #con el estado inicial de este automata
-        edo_init1=self.getEstadoInicial()
-        t=[nuevo_edo_inicial.getNombre(),edo_init1.getNombre(),"E"]
-        self.__ListTransicionesObjs([t])
+        #edo_init1=self.getEstadoInicial()----------
+        #t=[nuevo_edo_inicial.getNombre(),edo_init1.getNombre(),"¢"]-----------
+        #self.__ListTransicionesObjs([t])-----------
 
         #redefiniendo los nuevos estados iniciales creados
         #redefiniendo los nuevos estados finales creados
-        self.setEstadoInicial(nuevo_edo_inicial)
+        #self.setEstadoInicial(nuevo_edo_inicial)--------------
         self.setEstadosAceptacion([nuevo_edo_final])
 
     def cerraduraKleene(self):
@@ -257,13 +257,9 @@ class AFN_e():
         #ahora solo quedara unir el inicial con el final ya existentes
         edo_init=self.getEstadoInicial()
         edo_final=self.getEstadosAceptacion()[0]
-        t=[edo_init.getNombre(),edo_final.getNombre(),"E"]
+        t=[edo_init.getNombre(),edo_final.getNombre(),"¢"]
         self.__ListTransicionesObjs([t])
 
-        #redefiniendo los nuevos estados iniciales creados
-        #redefiniendo los nuevos estados finales creados
-        # self.setEstadoInicial(edo_init)
-        # self.setEstadosAceptacion([edo_final])
 
     def opcion(self):
         #se crea el nuevo estado final
@@ -274,11 +270,11 @@ class AFN_e():
         tam=len(self.getEstadosAceptacion())
         for i in range(tam):
             edo_final=self.getEstadosAceptacion()[i]
-            t=[edo_final.getNombre(),nuevo_edo_final.getNombre(),"E"]
+            t=[edo_final.getNombre(),nuevo_edo_final.getNombre(),"¢"]
             self.__ListTransicionesObjs([t])
 
         #se crea la transicion del estado inicial al final
-        t=[self.getEstadoInicial().getNombre(),nuevo_edo_final.getNombre(),"E"]
+        t=[self.getEstadoInicial().getNombre(),nuevo_edo_final.getNombre(),"¢"]
         self.__ListTransicionesObjs([t])
 
         #solo se redefine el estado final 

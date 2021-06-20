@@ -177,9 +177,9 @@ class Ventana(QtWidgets.QWidget):
     def analizarCadena(self):
         nombre_a_lexico = self.ui.comboBox_Analizadores.currentText()
         #print("ALexico:",nombre_a_lexico)
-        #cadena = self.ui.textEdit_EntradaCadena.toPlainText()
-        cadena="24.36+547-962*841/8547+(2.3-854)"
-        #cadena = "34.5+(6/8*(4))"
+        cadena = self.ui.textEdit_EntradaCadena.toPlainText()
+        #cadena="24.36+547-962*841/8547+(2.3-854)"
+        #cadena = "\**&([0-9]|h)+"
         print("Cadena:",cadena)
 
         a_lexico = self.db.obtenerALexico(nombre_a_lexico)
