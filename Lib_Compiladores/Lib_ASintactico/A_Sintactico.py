@@ -410,24 +410,128 @@ class GG():
 
 
 class LL1():
+    cadena = ''
+    lista_reglas = list()
+    lista_terminales = list()
+    lista_noterminales = list()
 
-    def __init__(self):
+    def __init__(self, cadena, terminales):
+        self.cadena = cadena
+        self.lista_terminales = terminales
+    
+    def spleet(self):
+        indice_actual = 0
+        k = 0
+        LI_actual = str()
+        no_terminales = []
+
+        A = [char for char in self.cadena]
+        
+        for i in range(0, len(A)-1):
+            if A[i] == '-' and A[i+1] == '>':
+                no_terminales.append(self.cadena[indice_actual:i])
+                LI_actual = self.cadena[indice_actual:i]
+            if A[i] == '>' and A[i-1] == '-':
+                k = i+1
+                continue
+            if A[i] == '|':
+                temp = LI_actual +"->"+ self.cadena[k:i]
+                #print(temp, "DDD")
+                self.lista_reglas.append(temp)
+                k = i+1
+            if A[i] == ';':
+                temp = LI_actual +"->"+ self.cadena[k:i]
+                #print(temp, "ult")
+                self.lista_reglas.append(temp)
+                k = i
+            if A[i] == '\n':
+                indice_actual = i+1
+
+        self.lista_noterminales = no_terminales
+    
+    
+    def izq(self,regla):
+        for i in range(0,len(regla)-1):
+            if regla[i] == '-':
+                if regla[i+1] == '>':
+                    return regla[0:i]
+
+    def buscareglas(self,nt):
+        Reglas = []
+        for elem in self.lista_reglas:
+            for i in range(0,len(elem)-1):
+                if elem[i] == '-':
+                    if elem[i+1] == '>':
+                        if elem[0:i] == nt:
+                            Reglas.append(elem)
+
+        return Reglas
+
+    def then(self, LD):
+        t = ''
+        for elem in self.lista_noterminales:
+            if elem == LD[0:len(elem)]:
+                t = elem
+        return t
+
+    Sig = []
+    Comp = []
+    def first(self, regla):
+
+        RT = []
+        nt = self.izq(regla)
+        LD = regla[len(nt)+2:]
+        s = ''
+        
+        for elem in self.lista_terminales:
+            if LD.find(elem) == 0:
+                self.Sig.append(elem)
+        
+        s = self.then(LD)
+
+        if self.Sig == []:
+            RT = self.buscareglas(s)
+            for elem in RT:
+                self.first(elem)
+        
+        if '@' in self.Sig:
+            t = self.then(LD[len(s):])
+            LR = []
+            #print(t, "REGLASEC")
+            if t != '':
+                RT = self.buscareglas(t)
+                for elem in RT:
+                    self.first(elem)
+            
+        return self.Sig
+    
+    def follow(self, regla):
         pass
-    
-    
-    
-    
-'''
-A = [["Ap",329],["->",210],["C",329],["B",329],[";",59],
-    ["B",329],["->",210],["+",329],["C",329],["B",329],["|",179],["-",329],["C",329],["B",329],["|",179],["@",329],[";",59],
-    ["C",329],["->",210],["E",329],["D",329],[";",59],
-    ["D",329],["->",210],["*",329],["E",329],["D",329],["|",179],["/",329],["E",329],["D",329],["|",179],["@",329],[";",59],
-    ["E",329],["->",210],["n",329],["u",329],["m",329],["|",179],["(",329],["A",329],[")",329],[";",59],
+
+
+
+A = [["E",329],["->",210],["T",329],[" ",32],["E'",329],[";",59],["\n",10],
+    ["E'",329],["->",210],["+",329],[" ",32],["T",329],[" ",32],["E'",329],["|",179],["-",329],[" ",32],["T",329],[" ",32],["E'",329],["|",179],["@",329],[";",59],["\n",10],
+    ["T",329],["->",210],["F",329],[" ",32],["T'",329],[";",59],["\n",10],
+    ["T'",329],["->",210],["*",329],[" ",32],["F",329],[" ",32],["T'",329],["|",179],["/",329],[" ",32],["F",329],[" ",32],["T'",329],["|",179],["@",329],[";",59],["\n",10],
+    ["F",329],["->",210],["num",329],["|",179],["(",329],[" ",32],["E",329],[" ",32],[")",329],[";",59],["\n",10],
     ["$",-1]]
 
 f = GG(A)
 a = f.evalua()
 b = f.evaluacion()
-print(a)
+#print(a)
 print(b)
-'''
+
+T = LL1(b,["num", "+","-","*","/","(",")","@"])
+T.spleet()
+print(T.lista_reglas)
+print(T.lista_terminales)
+print(T.lista_noterminales)
+
+
+for elem in T.lista_reglas:
+    print("Regla", elem, T.first(elem))
+    T.Sig = []
+
+
