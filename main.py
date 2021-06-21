@@ -8,6 +8,7 @@ from Lib_Compiladores.Lib_AFN_e.AFN_e import AFN_e
 from Lib_Compiladores.Lib_ClaseLexica.ClaseLexica import ClaseLexica
 from Lib_Compiladores.Lib_ALexico.A_Lexico import A_Lexico
 from Lib_Compiladores.Lib_ASintactico.A_Sintactico import *
+from Lib_Compiladores.Lib_ERtoAFD.ERtoAFD import ERtoAFD
 from Datos.BaseDatos import BaseDatos
 import copy
 
@@ -171,6 +172,7 @@ class Ventana(QtWidgets.QWidget):
         self.ui.comboBox_Analizadores.addItem(a_lexico.getNombreALexico()) 
         self.ui.comboBox_Calculadora.addItem(a_lexico.getNombreALexico())
         self.ui.comboBox_Gramaticas.addItem(a_lexico.getNombreALexico())
+        self.ui.comboBox_ERtoAFD.addItem(a_lexico.getNombreALexico())
         #se almacena en la base de datos
         self.db.agregarALexico(a_lexico)
 
@@ -179,7 +181,7 @@ class Ventana(QtWidgets.QWidget):
         #print("ALexico:",nombre_a_lexico)
         cadena = self.ui.textEdit_EntradaCadena.toPlainText()
         #cadena="24.36+547-962*841/8547+(2.3-854)"
-        cadena = "x&\-?&([0-9]\+[0-9])+"
+        #cadena = "x&\-?&([0-9]\+[0-9])+"
         print("Cadena:",cadena)
 
         a_lexico = self.db.obtenerALexico(nombre_a_lexico)
@@ -266,8 +268,30 @@ class Ventana(QtWidgets.QWidget):
             print("La cadena no es válida sintácticamente.")
 
     def ERtoAFD(self):
+        nombre_a_lexico = self.ui.comboBox_ERtoAFD.currentText()
+        print("ALexico:",nombre_a_lexico)
         cadena = self.ui.textEdit_ERtoAFD.toPlainText()
+        cadena = "x&\-?&([0-9]\+[0-9])+"
         print("Cadena:",cadena)
+
+        a_lexico = self.db.obtenerALexico(nombre_a_lexico)
+
+        if not(isinstance(a_lexico,A_Lexico)):
+            self.ui.label_StatusERtoAFD.setText("Error al Buscar el Analizador Lexico solicitado.")
+            return
+        self.ui.label_StatusERtoAFD.setText("Analizando cadena")
+
+        convertidor=ERtoAFD(a_lexico)
+
+        if not(isinstance(convertidor,ERtoAFD)):
+            self.ui.label_StatusERtoAFD.setText("Error al instanciar ERtoAFD")
+            return
+
+        convertidor.CrearAFD(cadena)
+        print("Fin")
+        
+
+
 
 
         
@@ -276,6 +300,7 @@ class Ventana(QtWidgets.QWidget):
         print("ALexico:",nombre_a_lexico)
         cadena = self.ui.textEdit_Gramaticas.toPlainText()
         print("Cadena:",cadena)
+
         a_lexico = self.db.obtenerALexico(nombre_a_lexico)
 
         if not(isinstance(a_lexico,A_Lexico)):
@@ -377,6 +402,7 @@ class Ventana(QtWidgets.QWidget):
             self.ui.comboBox_Analizadores.addItem(a_lexico.getNombreALexico())
             self.ui.comboBox_Calculadora.addItem(a_lexico.getNombreALexico())
             self.ui.comboBox_Gramaticas.addItem(a_lexico.getNombreALexico())
+            self.ui.comboBox_ERtoAFD.addItem(a_lexico.getNombreALexico())
 ##*****************************************Lista de AFNs*********
 
     def __eliminarAutomataLista(self,automata):
