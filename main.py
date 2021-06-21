@@ -271,7 +271,8 @@ class Ventana(QtWidgets.QWidget):
         nombre_a_lexico = self.ui.comboBox_ERtoAFD.currentText()
         print("ALexico:",nombre_a_lexico)
         cadena = self.ui.textEdit_ERtoAFD.toPlainText()
-        cadena = "x&\-?&([0-9]\+[0-9])+"
+        # cadena = "x&\-?&([0-9]&\+&[0-9])+"
+        #cadena="a*|b?"
         print("Cadena:",cadena)
 
         a_lexico = self.db.obtenerALexico(nombre_a_lexico)
@@ -287,12 +288,19 @@ class Ventana(QtWidgets.QWidget):
             self.ui.label_StatusERtoAFD.setText("Error al instanciar ERtoAFD")
             return
 
-        convertidor.CrearAFD(cadena)
+        a_lexico=convertidor.CrearAFD("borrame",cadena)
+
+        if not(isinstance(a_lexico,A_Lexico)):
+            self.ui.label_StatusERtoAFD.setText("Error en la conversion")
+            return
+
+        self.ui.comboBox_Analizadores.addItem(a_lexico.getNombreALexico()) 
+        self.ui.comboBox_Calculadora.addItem(a_lexico.getNombreALexico())
+        self.ui.comboBox_Gramaticas.addItem(a_lexico.getNombreALexico())
+        self.ui.comboBox_ERtoAFD.addItem(a_lexico.getNombreALexico())
+        #se almacena en la base de datos
+        self.db.agregarALexico(a_lexico)
         print("Fin")
-        
-
-
-
 
         
     def analizadorGramaticas(self):
