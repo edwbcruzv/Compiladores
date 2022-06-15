@@ -1,3 +1,5 @@
 # Compiladores_Primera_Parte
 
-Esto esta modificado desde local
+Materia Cursada con Andres Ortigoza en ESCOM-IPN
+
+INCOMPLETO
